@@ -1,38 +1,53 @@
-"use client";
-
 import type { Metadata } from "next";
+import { createClient } from "@/lib/supabase/server";
+import { KitchenBoard } from "@/components/kitchen/kitchen-board";
+import type { KitchenOrder } from "@/components/kitchen/order-ticket";
 
-export default function KitchenPage() {
+export const metadata: Metadata = {
+  title: "Kitchen",
+};
+
+export default async function KitchenPage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data: restaurant } = await supabase
+    .from("restaurants")
+    .select("id, name")
+    .eq("owner_id", user!.id)
+    .maybeSingle();
+
+  if (!restaurant) {
+    return (
+      <div className="p-8 text-center">
+        <p className="text-muted-foreground">No restaurant found.</p>
+      </div>
+    );
+  }
+
+  // Fetch today's active orders and a small tail of served orders from today.
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+
+  const { data: orders } = await supabase
+    .from("orders")
+    .select(
+      `*, order_items(*, menu_item:menu_items(id, name, is_veg)), table:tables(id, table_number)`
+    )
+    .eq("restaurant_id", restaurant.id)
+    .gte("created_at", todayStart.toISOString())
+    .in("status", ["pending", "confirmed", "preparing", "ready", "served"])
+    .order("created_at", { ascending: false })
+    .limit(100);
+
   return (
-    <div className="h-[calc(100vh-5rem)]">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold">Kitchen Display</h1>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-[calc(100%-3rem)]">
-        {/* New Orders Column */}
-        <div className="border rounded-lg p-4 bg-yellow-50">
-          <h2 className="font-semibold text-yellow-800 mb-3">New (0)</h2>
-          <p className="text-sm text-muted-foreground">
-            New orders will appear here
-          </p>
-        </div>
-
-        {/* Preparing Column */}
-        <div className="border rounded-lg p-4 bg-orange-50">
-          <h2 className="font-semibold text-orange-800 mb-3">Preparing (0)</h2>
-          <p className="text-sm text-muted-foreground">
-            Orders being prepared
-          </p>
-        </div>
-
-        {/* Ready Column */}
-        <div className="border rounded-lg p-4 bg-green-50">
-          <h2 className="font-semibold text-green-800 mb-3">Ready (0)</h2>
-          <p className="text-sm text-muted-foreground">
-            Orders ready to serve
-          </p>
-        </div>
-      </div>
+    <div className="h-[calc(100vh-8rem)]">
+      <KitchenBoard
+        restaurantId={restaurant.id}
+        initialOrders={(orders ?? []) as unknown as KitchenOrder[]}
+      />
     </div>
   );
 }
