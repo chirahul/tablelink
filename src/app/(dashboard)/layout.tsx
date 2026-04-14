@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { APP_NAME } from "@/lib/constants";
+import { logout } from "../(auth)/actions";
+import { createClient } from "@/lib/supabase/server";
+import { Button } from "@/components/ui/button";
 
 const sidebarLinks = [
   { href: "/dashboard", label: "Dashboard" },
@@ -11,11 +14,16 @@ const sidebarLinks = [
   { href: "/settings", label: "Settings" },
 ];
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
@@ -36,14 +44,36 @@ export default function DashboardLayout({
             </Link>
           ))}
         </nav>
+        <div className="border-t p-4 space-y-2">
+          {user && (
+            <p className="text-xs text-muted-foreground truncate px-2">
+              {user.email}
+            </p>
+          )}
+          <form action={logout}>
+            <Button
+              type="submit"
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start"
+            >
+              Logout
+            </Button>
+          </form>
+        </div>
       </aside>
 
       {/* Main content */}
       <div className="flex-1 flex flex-col">
-        <header className="flex h-16 items-center border-b px-6 md:hidden">
+        <header className="flex h-16 items-center justify-between border-b px-6 md:hidden">
           <Link href="/dashboard" className="font-bold text-lg">
             {APP_NAME}
           </Link>
+          <form action={logout}>
+            <Button type="submit" variant="ghost" size="sm">
+              Logout
+            </Button>
+          </form>
         </header>
         <main className="flex-1 p-6">{children}</main>
       </div>

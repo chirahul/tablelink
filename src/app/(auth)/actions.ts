@@ -1,0 +1,123 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+export type ActionResult =
+  | { success: true }
+  | { success: false; error: string };
+
+export async function signUp(formData: FormData): Promise<ActionResult> {
+  const restaurantName = String(formData.get("restaurant_name") || "").trim();
+  const email = String(formData.get("email") || "").trim();
+  const phone = String(formData.get("phone") || "").trim();
+  const password = String(formData.get("password") || "");
+
+  if (!restaurantName || !email || !password) {
+    return { success: false, error: "Please fill in all required fields." };
+  }
+
+  if (password.length < 6) {
+    return {
+      success: false,
+      error: "Password must be at least 6 characters.",
+    };
+  }
+
+  const supabase = await createClient();
+
+  // 1. Create the auth user
+  const { data: authData, error: authError } = await supabase.auth.signUp({
+    email,
+    password,
+  });
+
+  if (authError) {
+    return { success: false, error: authError.message };
+  }
+
+  if (!authData.user) {
+    return {
+      success: false,
+      error: "Account created, but no session returned. Please log in.",
+    };
+  }
+
+  // 2. Create a unique slug for the restaurant
+  const baseSlug = slugify(restaurantName);
+  let slug = baseSlug;
+  let suffix = 1;
+
+  while (true) {
+    const { data: existing } = await supabase
+      .from("restaurants")
+      .select("id")
+      .eq("slug", slug)
+      .maybeSingle();
+
+    if (!existing) break;
+    suffix += 1;
+    slug = `${baseSlug}-${suffix}`;
+  }
+
+  // 3. Create the restaurant row
+  const { error: restaurantError } = await supabase
+    .from("restaurants")
+    .insert({
+      name: restaurantName,
+      slug,
+      email,
+      phone: phone || null,
+      owner_id: authData.user.id,
+    });
+
+  if (restaurantError) {
+    return {
+      success: false,
+      error: `Account created but failed to create restaurant: ${restaurantError.message}`,
+    };
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/dashboard");
+}
+
+export async function login(formData: FormData): Promise<ActionResult> {
+  const email = String(formData.get("email") || "").trim();
+  const password = String(formData.get("password") || "");
+
+  if (!email || !password) {
+    return { success: false, error: "Please enter email and password." };
+  }
+
+  const supabase = await createClient();
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/dashboard");
+}
+
+export async function logout(): Promise<void> {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  revalidatePath("/", "layout");
+  redirect("/login");
+}
