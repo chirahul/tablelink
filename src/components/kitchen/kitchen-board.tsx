@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -39,8 +39,6 @@ const COLUMNS: { title: string; statuses: OrderStatus[]; accent: string }[] = [
 
 export function KitchenBoard({ restaurantId, initialOrders }: Props) {
   const [orders, setOrders] = useState<KitchenOrder[]>(initialOrders);
-  const ordersRef = useRef(orders);
-  ordersRef.current = orders;
 
   const { enabled, enable, play } = useAudioAlert();
   const supabase = createClient();
@@ -95,6 +93,15 @@ export function KitchenBoard({ restaurantId, initialOrders }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [restaurantId]);
 
+  const handleLocalUpdate = useCallback(
+    (id: string, patch: Partial<KitchenOrder>) => {
+      setOrders((prev) =>
+        prev.map((o) => (o.id === id ? { ...o, ...patch } : o))
+      );
+    },
+    []
+  );
+
   const ordersByStatus = (statuses: OrderStatus[]) =>
     orders
       .filter((o) => statuses.includes(o.status))
@@ -145,7 +152,11 @@ export function KitchenBoard({ restaurantId, initialOrders }: Props) {
                   </p>
                 )}
                 {list.map((o) => (
-                  <OrderTicket key={o.id} order={o} />
+                  <OrderTicket
+                    key={o.id}
+                    order={o}
+                    onLocalUpdate={handleLocalUpdate}
+                  />
                 ))}
               </div>
             </div>

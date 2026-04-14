@@ -24,6 +24,7 @@ export type KitchenOrder = Order & {
 
 type Props = {
   order: KitchenOrder;
+  onLocalUpdate?: (id: string, patch: Partial<KitchenOrder>) => void;
 };
 
 type Action = {
@@ -62,12 +63,17 @@ function paymentBadge(method: PaymentMethod, status: PaymentStatus) {
   );
 }
 
-export function OrderTicket({ order }: Props) {
+export function OrderTicket({ order, onLocalUpdate }: Props) {
   const [isPending, startTransition] = useTransition();
   const [expanded, setExpanded] = useState(false);
   const actions = ACTIONS_BY_STATUS[order.status] ?? [];
 
   function updateStatus(next: OrderStatus) {
+    // Optimistic update: move the card immediately. If the API call
+    // fails, we'll roll back.
+    const previous = order.status;
+    onLocalUpdate?.(order.id, { status: next });
+
     startTransition(async () => {
       const res = await fetch(`/api/orders/${order.id}/status`, {
         method: "PATCH",
@@ -77,6 +83,8 @@ export function OrderTicket({ order }: Props) {
       const body = await res.json();
       if (!res.ok) {
         toast.error(body.error ?? "Failed to update");
+        // Roll back the optimistic change
+        onLocalUpdate?.(order.id, { status: previous });
         return;
       }
       if (next === "cancelled") toast.info(`${order.order_number} cancelled`);
@@ -86,13 +94,19 @@ export function OrderTicket({ order }: Props) {
   async function togglePayment() {
     const nextPaymentStatus =
       order.payment_status === "paid" ? "pending" : "paid";
+    const previous = order.payment_status;
+    onLocalUpdate?.(order.id, { payment_status: nextPaymentStatus });
+
     startTransition(async () => {
       const res = await fetch(`/api/orders/${order.id}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ payment_status: nextPaymentStatus }),
       });
-      if (!res.ok) toast.error("Failed to update payment");
+      if (!res.ok) {
+        toast.error("Failed to update payment");
+        onLocalUpdate?.(order.id, { payment_status: previous });
+      }
     });
   }
 
