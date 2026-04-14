@@ -6,9 +6,23 @@ export async function updateSession(request: NextRequest) {
     request,
   });
 
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // If Supabase isn't configured yet, skip auth checks.
+  // This prevents the middleware from crashing during pre-Supabase deploys.
+  if (
+    !supabaseUrl ||
+    !supabaseKey ||
+    supabaseUrl.includes("your-project") ||
+    supabaseKey === "your-anon-key"
+  ) {
+    return supabaseResponse;
+  }
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseKey,
     {
       cookies: {
         getAll() {
