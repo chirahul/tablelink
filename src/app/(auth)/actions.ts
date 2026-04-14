@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 function slugify(text: string): string {
   return text
@@ -53,13 +54,18 @@ export async function signUp(formData: FormData): Promise<ActionResult> {
     };
   }
 
-  // 2. Create a unique slug for the restaurant
-  const baseSlug = slugify(restaurantName);
+  // 2. Use the admin client for restaurant creation.
+  // This bypasses RLS so it works regardless of whether email confirmation
+  // is enabled (no session is guaranteed after signUp).
+  const admin = createAdminClient();
+
+  // 3. Create a unique slug for the restaurant
+  const baseSlug = slugify(restaurantName) || "restaurant";
   let slug = baseSlug;
   let suffix = 1;
 
   while (true) {
-    const { data: existing } = await supabase
+    const { data: existing } = await admin
       .from("restaurants")
       .select("id")
       .eq("slug", slug)
@@ -70,8 +76,8 @@ export async function signUp(formData: FormData): Promise<ActionResult> {
     slug = `${baseSlug}-${suffix}`;
   }
 
-  // 3. Create the restaurant row
-  const { error: restaurantError } = await supabase
+  // 4. Create the restaurant row (bypasses RLS via service role)
+  const { error: restaurantError } = await admin
     .from("restaurants")
     .insert({
       name: restaurantName,
@@ -86,6 +92,11 @@ export async function signUp(formData: FormData): Promise<ActionResult> {
       success: false,
       error: `Account created but failed to create restaurant: ${restaurantError.message}`,
     };
+  }
+
+  // If email confirmation is ON, there's no session yet. Send to login.
+  if (!authData.session) {
+    redirect("/login?confirmed=check-email");
   }
 
   revalidatePath("/", "layout");

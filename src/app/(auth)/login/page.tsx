@@ -14,7 +14,14 @@ export const metadata: Metadata = {
   title: "Login",
 };
 
-export default function LoginPage() {
+type Props = {
+  searchParams: Promise<{ confirmed?: string }>;
+};
+
+export default async function LoginPage({ searchParams }: Props) {
+  const { confirmed } = await searchParams;
+  const showEmailNotice = confirmed === "check-email";
+
   return (
     <Card>
       <CardHeader className="text-center">
@@ -23,7 +30,12 @@ export default function LoginPage() {
           Login to manage your restaurant
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
+        {showEmailNotice && (
+          <div className="rounded-md bg-blue-50 border border-blue-200 p-3 text-sm text-blue-900">
+            Account created! Please check your email to confirm, then log in.
+          </div>
+        )}
         <LoginForm />
       </CardContent>
       <CardFooter className="justify-center">
