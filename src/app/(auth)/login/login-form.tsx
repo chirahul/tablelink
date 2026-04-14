@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +9,9 @@ import { Label } from "@/components/ui/label";
 import { login } from "../actions";
 
 export function LoginForm() {
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") ?? "";
+
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -24,6 +28,7 @@ export function LoginForm() {
 
   return (
     <form action={onSubmit} className="space-y-4">
+      <input type="hidden" name="redirect_to" value={redirectTo} />
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <Input

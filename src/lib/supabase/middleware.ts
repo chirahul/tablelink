@@ -48,18 +48,35 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Protected routes: redirect to login if not authenticated
-  const protectedPaths = ["/dashboard", "/orders", "/menu", "/tables", "/kitchen", "/analytics", "/settings"];
-  const adminPaths = ["/admin"];
+  // Protected routes: redirect to login if not authenticated.
+  // IMPORTANT: these must NOT accidentally match customer-facing pages.
+  // Specifically, /menu/[slug] is the CUSTOMER menu; admin menu management
+  // lives at exactly /menu and /menu/categories only.
   const pathname = request.nextUrl.pathname;
 
-  const isProtected = protectedPaths.some((path) => pathname.startsWith(path));
-  const isAdmin = adminPaths.some((path) => pathname.startsWith(path));
+  const isAdminMenu =
+    pathname === "/menu" || pathname === "/menu/categories";
 
-  if ((isProtected || isAdmin) && !user) {
+  const protectedPrefixes = [
+    "/dashboard",
+    "/orders",
+    "/tables",
+    "/kitchen",
+    "/analytics",
+    "/settings",
+    "/admin",
+  ];
+
+  const isProtected =
+    isAdminMenu ||
+    protectedPrefixes.some(
+      (p) => pathname === p || pathname.startsWith(p + "/")
+    );
+
+  if (isProtected && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
-    url.searchParams.set("redirect", pathname);
+    url.searchParams.set("redirect", pathname + request.nextUrl.search);
     return NextResponse.redirect(url);
   }
 

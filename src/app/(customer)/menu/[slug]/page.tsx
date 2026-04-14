@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { fetchMenuBySlug } from "@/lib/fetch-menu";
 import { MenuBrowser } from "@/components/customer/menu-browser";
+import { WelcomeGate } from "@/components/customer/welcome-gate";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -39,11 +40,16 @@ export default async function MenuPage({ params, searchParams }: Props) {
   }
 
   return (
-    <MenuBrowser
-      restaurant={data.restaurant}
-      categories={data.categories}
-      items={data.items}
-      table={data.table}
-    />
+    <WelcomeGate
+      restaurantName={data.restaurant.name}
+      tableNumber={data.table?.table_number ?? null}
+    >
+      <MenuBrowser
+        restaurant={data.restaurant}
+        categories={data.categories}
+        items={data.items}
+        table={data.table}
+      />
+    </WelcomeGate>
   );
 }

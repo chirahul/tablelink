@@ -106,6 +106,7 @@ export async function signUp(formData: FormData): Promise<ActionResult> {
 export async function login(formData: FormData): Promise<ActionResult> {
   const email = String(formData.get("email") || "").trim();
   const password = String(formData.get("password") || "");
+  const redirectToRaw = String(formData.get("redirect_to") || "").trim();
 
   if (!email || !password) {
     return { success: false, error: "Please enter email and password." };
@@ -123,7 +124,13 @@ export async function login(formData: FormData): Promise<ActionResult> {
   }
 
   revalidatePath("/", "layout");
-  redirect("/dashboard");
+
+  // Honor the ?redirect= query param if it's a safe same-origin path.
+  const safeRedirect =
+    redirectToRaw.startsWith("/") && !redirectToRaw.startsWith("//")
+      ? redirectToRaw
+      : "/dashboard";
+  redirect(safeRedirect);
 }
 
 export async function logout(): Promise<void> {
