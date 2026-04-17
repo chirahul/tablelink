@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { Badge } from "@/components/ui/badge";
-import { formatCurrency, formatRelativeTime } from "@/lib/format";
-import { ORDER_STATUS_COLORS, ORDER_STATUS_LABELS } from "@/lib/constants";
 import { EmptyState } from "@/components/shared/empty-state";
+import { OrdersList } from "./orders-list";
 import type { OrderStatus } from "@/lib/types";
 
 export const metadata: Metadata = {
@@ -114,59 +112,17 @@ export default async function OrdersPage({ searchParams }: Props) {
         ))}
       </div>
 
-      {(!orders || orders.length === 0) && (
+      {(!orders || orders.length === 0) ? (
         <EmptyState
           icon={<ShoppingBag className="w-7 h-7" />}
           title="No orders yet"
           description="When customers place orders via QR code, they'll appear here. Share your menu link or print QR codes to get started."
           action={{ label: "Go to Tables & QR", href: "/tables" }}
         />
+      ) : (
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        <OrdersList orders={orders as any} />
       )}
-
-      <div className="space-y-2">
-        {(orders ?? []).map((o) => {
-          const itemCount = (o.order_items ?? []).reduce(
-            (s: number, oi: { quantity: number }) => s + oi.quantity,
-            0
-          );
-          const tableNumber =
-            (o.table as unknown as { table_number: string } | null)
-              ?.table_number ?? "—";
-          return (
-            <div
-              key={o.id}
-              className="p-4 rounded-lg border bg-card flex items-center justify-between gap-4 flex-wrap"
-            >
-              <div className="flex items-center gap-4">
-                <div>
-                  <div className="font-bold">{o.order_number}</div>
-                  <div className="text-xs text-muted-foreground">
-                    Table {tableNumber} • {formatRelativeTime(o.created_at)}
-                  </div>
-                </div>
-                <Badge
-                  className={`${ORDER_STATUS_COLORS[o.status] ?? ""} border-0 text-xs`}
-                >
-                  {ORDER_STATUS_LABELS[o.status] ?? o.status}
-                </Badge>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="text-right">
-                  <div className="font-semibold">
-                    {formatCurrency(Number(o.total))}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {itemCount} items •{" "}
-                    {o.payment_method === "upi" ? "UPI" : "Counter"}
-                    {o.payment_status === "paid" ? " ✓" : ""}
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
     </div>
   );
 }

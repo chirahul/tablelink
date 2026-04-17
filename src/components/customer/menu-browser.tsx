@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { Clock, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useCartStore } from "@/stores/cart-store";
+import { isRestaurantOpen } from "@/lib/opening-hours";
 import type { Category, MenuItem, Restaurant, Table } from "@/lib/types";
 import { MenuItemCard } from "./menu-item-card";
 import { ItemDetailModal } from "./item-detail-modal";
@@ -56,9 +57,24 @@ export function MenuBrowser({ restaurant, categories, items, table }: Props) {
 
   const hasResults = filteredItems.length > 0;
 
+  const { isOpen, todayHours } = isRestaurantOpen(restaurant.opening_hours);
+
   return (
     <>
       <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b">
+        {!isOpen && (
+          <div className="bg-orange-50 border-b border-orange-200 px-4 py-2">
+            <div className="container max-w-2xl mx-auto flex items-center gap-2 text-sm text-orange-900">
+              <Clock className="w-4 h-4 shrink-0" />
+              <span>
+                Currently closed
+                {todayHours
+                  ? ` — opens at ${todayHours.open}`
+                  : " — check back later"}
+              </span>
+            </div>
+          </div>
+        )}
         <div className="container max-w-2xl mx-auto px-4 py-3 space-y-3">
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0">

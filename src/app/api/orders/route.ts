@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { isRestaurantOpen } from "@/lib/opening-hours";
 import type { MenuAddon } from "@/lib/types";
 
 type IncomingOrderItem = {
@@ -49,7 +50,7 @@ export async function POST(request: Request) {
   // Verify restaurant exists and is active
   const { data: restaurant, error: rErr } = await admin
     .from("restaurants")
-    .select("id, settings, is_active")
+    .select("id, settings, is_active, opening_hours")
     .eq("id", body.restaurant_id)
     .maybeSingle();
 
@@ -57,6 +58,17 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { error: "Restaurant not available" },
       { status: 404 }
+    );
+  }
+
+  // Check opening hours
+  const { isOpen } = isRestaurantOpen(
+    restaurant.opening_hours as Record<string, { open: string; close: string }> | null
+  );
+  if (!isOpen) {
+    return NextResponse.json(
+      { error: "This restaurant is currently closed. Please try again during opening hours." },
+      { status: 400 }
     );
   }
 
