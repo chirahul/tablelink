@@ -63,26 +63,26 @@ export function OrderTracker({ initialOrder }: Props) {
   const isCancelled = order.status === "cancelled";
 
   return (
-    <div className="container max-w-lg mx-auto px-4 py-6 pb-16">
-      <div className="text-center mb-6">
-        <p className="text-xs text-muted-foreground">Order Number</p>
-        <h1 className="text-3xl font-bold">{order.order_number}</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+    <div className="container max-w-lg mx-auto px-4 py-8 pb-16">
+      <div className="text-center mb-8">
+        <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Order Number</p>
+        <h1 className="text-4xl font-bold tracking-tight">{order.order_number}</h1>
+        <p className="text-sm text-muted-foreground mt-2">
           {order.restaurant.name} • Table {order.table.table_number}
         </p>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-muted-foreground mt-1">
           Placed {formatRelativeTime(order.created_at)}
         </p>
       </div>
 
       {/* Status tracker */}
       {isCancelled ? (
-        <div className="flex items-center gap-3 p-4 rounded-lg bg-red-50 border border-red-200 text-red-900 mb-6">
+        <div className="flex items-center gap-3 p-5 rounded-2xl bg-red-50 border border-red-200 text-red-900 mb-8">
           <X className="w-5 h-5" />
           <span className="font-semibold">Order cancelled</span>
         </div>
       ) : (
-        <div className="p-4 rounded-lg border bg-card mb-6">
+        <div className="p-5 rounded-2xl border bg-card/80 backdrop-blur-sm shadow-sm mb-8">
           <div className="relative flex justify-between">
             {STATUS_STEPS.map((step, idx) => {
               const isDone = idx <= currentStepIndex;
@@ -90,20 +90,20 @@ export function OrderTracker({ initialOrder }: Props) {
               return (
                 <div
                   key={step.status}
-                  className="flex flex-col items-center gap-1 z-10 relative bg-card px-1"
+                  className="flex flex-col items-center gap-1.5 z-10 relative bg-transparent px-1"
                 >
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 ${
                       isDone
-                        ? "bg-foreground text-background"
+                        ? "bg-foreground text-background shadow-lg"
                         : "bg-muted text-muted-foreground"
-                    } ${isCurrent ? "ring-2 ring-offset-2 ring-foreground" : ""}`}
+                    } ${isCurrent ? "ring-2 ring-offset-2 ring-foreground scale-110" : ""}`}
                   >
                     {step.icon}
                   </div>
                   <span
                     className={`text-[10px] text-center ${
-                      isDone ? "font-medium" : "text-muted-foreground"
+                      isDone ? "font-semibold" : "text-muted-foreground"
                     }`}
                   >
                     {step.label}

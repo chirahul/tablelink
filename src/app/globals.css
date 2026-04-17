@@ -130,6 +130,9 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    transition-property: color, background-color, border-color, box-shadow, opacity;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    transition-duration: 200ms;
   }
   body {
     @apply bg-background text-foreground;
@@ -140,10 +143,20 @@
   }
   html {
     @apply font-sans;
+    scroll-behavior: smooth;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading;
     letter-spacing: -0.02em;
     font-weight: 700;
+  }
+
+  /* Premium page transitions */
+  @keyframes page-enter {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  main {
+    animation: page-enter 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   }
 }

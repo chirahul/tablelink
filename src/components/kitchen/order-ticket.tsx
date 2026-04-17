@@ -114,8 +114,8 @@ export function OrderTicket({ order, onLocalUpdate }: Props) {
 
   return (
     <div
-      className={`rounded-lg border bg-card p-3 shadow-sm transition-shadow hover:shadow-md ${
-        order.status === "pending" ? "ring-2 ring-yellow-400/60" : ""
+      className={`rounded-2xl border bg-card p-3.5 shadow-sm transition-all duration-300 hover:shadow-md ${
+        order.status === "pending" ? "ring-2 ring-yellow-400/60 shadow-yellow-100" : ""
       }`}
     >
       {/* Header */}

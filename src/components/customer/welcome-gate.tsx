@@ -107,12 +107,13 @@ export function WelcomeGate({ restaurantName, tableNumber, children }: Props) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-muted/40">
-      <div className="w-full max-w-sm rounded-2xl bg-card border p-6 shadow-sm">
+    <div className="min-h-screen flex items-center justify-center p-4 relative">
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-muted/60 via-background to-background" />
+      <div className="w-full max-w-sm rounded-2xl bg-card/80 backdrop-blur-sm border-0 shadow-xl p-8">
         {mode === "choose" && (
           <>
-            <div className="text-center mb-6">
-              <h1 className="text-2xl font-bold mb-1">{restaurantName}</h1>
+            <div className="text-center mb-8">
+              <h1 className="text-2xl font-bold tracking-tight mb-1">{restaurantName}</h1>
               {tableNumber && (
                 <p className="text-sm text-muted-foreground">
                   Table {tableNumber}

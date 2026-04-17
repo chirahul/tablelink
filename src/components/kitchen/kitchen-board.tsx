@@ -139,11 +139,11 @@ export function KitchenBoard({ restaurantId, initialOrders }: Props) {
           return (
             <div
               key={col.title}
-              className={`rounded-xl border ${col.accent} flex flex-col min-h-[200px] lg:min-h-0`}
+              className={`rounded-2xl border ${col.accent} flex flex-col min-h-[200px] lg:min-h-0`}
             >
-              <div className="px-3 py-2 font-semibold text-sm flex items-center justify-between">
+              <div className="px-4 py-3 font-semibold text-sm flex items-center justify-between">
                 <span>{col.title}</span>
-                <span className="text-xs opacity-70">{list.length}</span>
+                <span className="w-6 h-6 rounded-full bg-foreground/10 flex items-center justify-center text-xs">{list.length}</span>
               </div>
               <div className="flex-1 overflow-y-auto p-2 pt-0 space-y-2">
                 {list.length === 0 && (
