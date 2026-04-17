@@ -7,9 +7,27 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { signUp } from "../actions";
 
+function getStrength(pw: string): { score: number; label: string; color: string } {
+  if (!pw) return { score: 0, label: "", color: "bg-muted" };
+  let s = 0;
+  if (pw.length >= 6) s += 1;
+  if (pw.length >= 10) s += 1;
+  if (/[A-Z]/.test(pw)) s += 1;
+  if (/[0-9]/.test(pw)) s += 1;
+  if (/[^A-Za-z0-9]/.test(pw)) s += 1;
+
+  if (s <= 1) return { score: 1, label: "Weak", color: "bg-red-500" };
+  if (s <= 2) return { score: 2, label: "Fair", color: "bg-orange-500" };
+  if (s <= 3) return { score: 3, label: "Good", color: "bg-yellow-500" };
+  return { score: 4, label: "Strong", color: "bg-green-500" };
+}
+
 export function RegisterForm() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [password, setPassword] = useState("");
+
+  const strength = getStrength(password);
 
   async function onSubmit(formData: FormData) {
     setError(null);
@@ -19,7 +37,6 @@ export function RegisterForm() {
         setError(result.error);
         toast.error(result.error);
       }
-      // On success, the server action redirects to /dashboard
     });
   }
 
@@ -65,7 +82,26 @@ export function RegisterForm() {
           required
           minLength={6}
           disabled={isPending}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
+        {password && (
+          <div className="space-y-1">
+            <div className="flex gap-1 h-1">
+              {[1, 2, 3, 4].map((i) => (
+                <div
+                  key={i}
+                  className={`flex-1 rounded-full transition-colors ${
+                    i <= strength.score ? strength.color : "bg-muted"
+                  }`}
+                />
+              ))}
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              {strength.label} — use 6+ chars, uppercase, numbers, symbols
+            </p>
+          </div>
+        )}
       </div>
 
       {error && (

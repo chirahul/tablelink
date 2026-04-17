@@ -133,6 +133,51 @@ export async function login(formData: FormData): Promise<ActionResult> {
   redirect(safeRedirect);
 }
 
+export async function forgotPassword(formData: FormData): Promise<ActionResult> {
+  const email = String(formData.get("email") || "").trim();
+
+  if (!email) {
+    return { success: false, error: "Please enter your email." };
+  }
+
+  const supabase = await createClient();
+
+  const origin =
+    process.env.NEXT_PUBLIC_APP_URL || "https://tablelink-amber.vercel.app";
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${origin}/reset-password`,
+  });
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
+}
+
+export async function resetPassword(formData: FormData): Promise<ActionResult> {
+  const password = String(formData.get("password") || "");
+
+  if (!password || password.length < 6) {
+    return {
+      success: false,
+      error: "Password must be at least 6 characters.",
+    };
+  }
+
+  const supabase = await createClient();
+
+  const { error } = await supabase.auth.updateUser({ password });
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/dashboard");
+}
+
 export async function logout(): Promise<void> {
   const supabase = await createClient();
   await supabase.auth.signOut();

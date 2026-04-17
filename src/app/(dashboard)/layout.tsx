@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { APP_NAME } from "@/lib/constants";
 import { logout } from "../(auth)/actions";
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
+import { MobileNav } from "@/components/dashboard/mobile-nav";
 
 const sidebarLinks = [
   { href: "/dashboard", label: "Dashboard" },
@@ -24,9 +26,13 @@ export default async function DashboardLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
+  if (!user) {
+    redirect("/login");
+  }
+
   return (
     <div className="flex min-h-screen">
-      {/* Sidebar */}
+      {/* Desktop sidebar */}
       <aside className="hidden md:flex w-64 flex-col border-r bg-muted/40">
         <div className="flex h-16 items-center border-b px-6">
           <Link href="/dashboard" className="font-bold text-lg">
@@ -45,11 +51,9 @@ export default async function DashboardLayout({
           ))}
         </nav>
         <div className="border-t p-4 space-y-2">
-          {user && (
-            <p className="text-xs text-muted-foreground truncate px-2">
-              {user.email}
-            </p>
-          )}
+          <p className="text-xs text-muted-foreground truncate px-2">
+            {user.email}
+          </p>
           <form action={logout}>
             <Button
               type="submit"
@@ -65,10 +69,14 @@ export default async function DashboardLayout({
 
       {/* Main content */}
       <div className="flex-1 flex flex-col">
-        <header className="flex h-16 items-center justify-between border-b px-6 md:hidden">
-          <Link href="/dashboard" className="font-bold text-lg">
-            {APP_NAME}
-          </Link>
+        {/* Mobile header */}
+        <header className="flex h-16 items-center justify-between border-b px-4 md:hidden">
+          <div className="flex items-center gap-2">
+            <MobileNav userEmail={user.email ?? null} />
+            <Link href="/dashboard" className="font-bold text-lg">
+              {APP_NAME}
+            </Link>
+          </div>
           <form action={logout}>
             <Button type="submit" variant="ghost" size="sm">
               Logout
