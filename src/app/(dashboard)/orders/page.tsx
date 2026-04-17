@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ShoppingBag } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency, formatRelativeTime } from "@/lib/format";
 import { ORDER_STATUS_COLORS, ORDER_STATUS_LABELS } from "@/lib/constants";
+import { EmptyState } from "@/components/shared/empty-state";
 import type { OrderStatus } from "@/lib/types";
 
 export const metadata: Metadata = {
@@ -113,9 +115,12 @@ export default async function OrdersPage({ searchParams }: Props) {
       </div>
 
       {(!orders || orders.length === 0) && (
-        <p className="text-muted-foreground py-12 text-center">
-          No orders found for this filter.
-        </p>
+        <EmptyState
+          icon={<ShoppingBag className="w-7 h-7" />}
+          title="No orders yet"
+          description="When customers place orders via QR code, they'll appear here. Share your menu link or print QR codes to get started."
+          action={{ label: "Go to Tables & QR", href: "/tables" }}
+        />
       )}
 
       <div className="space-y-2">

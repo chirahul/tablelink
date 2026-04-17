@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Pencil, Trash2, Plus } from "lucide-react";
+import { FolderOpen, Pencil, Trash2, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -63,9 +63,15 @@ export function CategoriesManager({ categories }: Props) {
       </div>
 
       {categories.length === 0 ? (
-        <p className="text-center py-12 text-muted-foreground">
-          No categories yet. Create your first one.
-        </p>
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4 text-muted-foreground">
+            <FolderOpen className="w-7 h-7" />
+          </div>
+          <h3 className="text-lg font-semibold mb-1">No categories yet</h3>
+          <p className="text-sm text-muted-foreground max-w-sm mb-6">
+            Categories group your menu — like Starters, Main Course, Beverages. Create your first one to start adding items.
+          </p>
+        </div>
       ) : (
         <div className="space-y-2">
           {categories.map((c) => (

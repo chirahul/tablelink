@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { QrCode, Trash2, Plus } from "lucide-react";
+import { QrCode, Trash2, Plus, LayoutGrid } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -60,9 +60,15 @@ export function TablesManager({
       </div>
 
       {tables.length === 0 ? (
-        <p className="text-center py-12 text-muted-foreground">
-          No tables yet. Add your first table to generate QR codes.
-        </p>
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4 text-muted-foreground">
+            <LayoutGrid className="w-7 h-7" />
+          </div>
+          <h3 className="text-lg font-semibold mb-1">No tables yet</h3>
+          <p className="text-sm text-muted-foreground max-w-sm mb-6">
+            Add your restaurant&apos;s tables and generate a unique QR code for each. Customers scan the QR to order from that table.
+          </p>
+        </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {tables.map((t) => (
