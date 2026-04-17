@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { formatCurrency } from "@/lib/format";
 import { VegIndicator } from "@/components/customer/veg-indicator";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import {
   deleteMenuItem,
   toggleMenuItemAvailability,
@@ -26,6 +27,7 @@ export function MenuItemsManager({ items, categories }: Props) {
   const [isPending, startTransition] = useTransition();
   const [editing, setEditing] = useState<MenuItem | null>(null);
   const [creating, setCreating] = useState(false);
+  const [deleting, setDeleting] = useState<MenuItem | null>(null);
   const [filterCategory, setFilterCategory] = useState<string>("all");
 
   const filtered = useMemo(() => {
@@ -49,12 +51,13 @@ export function MenuItemsManager({ items, categories }: Props) {
     });
   }
 
-  function onDelete(id: string, name: string) {
-    if (!confirm(`Delete "${name}"?`)) return;
+  function onConfirmDelete() {
+    if (!deleting) return;
     startTransition(async () => {
-      const r = await deleteMenuItem(id);
+      const r = await deleteMenuItem(deleting.id);
       if (r.success) toast.success("Item deleted");
       else toast.error(r.error);
+      setDeleting(null);
     });
   }
 
@@ -191,7 +194,7 @@ export function MenuItemsManager({ items, categories }: Props) {
                           variant="outline"
                           size="icon"
                           disabled={isPending}
-                          onClick={() => onDelete(i.id, i.name)}
+                          onClick={() => setDeleting(i)}
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -216,6 +219,16 @@ export function MenuItemsManager({ items, categories }: Props) {
           )}
         </DialogContent>
       </Dialog>
+
+      <ConfirmDialog
+        open={!!deleting}
+        onOpenChange={(o) => !o && setDeleting(null)}
+        title={`Delete "${deleting?.name}"?`}
+        description="This menu item will be permanently removed. This action cannot be undone."
+        confirmLabel="Delete item"
+        onConfirm={onConfirmDelete}
+        isPending={isPending}
+      />
     </div>
   );
 }

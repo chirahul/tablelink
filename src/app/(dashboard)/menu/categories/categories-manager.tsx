@@ -15,6 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import {
   createCategory,
   updateCategory,
@@ -29,19 +30,16 @@ type Props = {
 export function CategoriesManager({ categories }: Props) {
   const [editing, setEditing] = useState<Category | null>(null);
   const [creating, setCreating] = useState(false);
+  const [deleting, setDeleting] = useState<Category | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  function onDelete(id: string, name: string) {
-    if (
-      !confirm(
-        `Delete "${name}"? This will also delete all menu items in this category.`
-      )
-    )
-      return;
+  function onConfirmDelete() {
+    if (!deleting) return;
     startTransition(async () => {
-      const r = await deleteCategory(id);
+      const r = await deleteCategory(deleting.id);
       if (r.success) toast.success("Category deleted");
       else toast.error(r.error);
+      setDeleting(null);
     });
   }
 
@@ -109,7 +107,7 @@ export function CategoriesManager({ categories }: Props) {
                   variant="outline"
                   size="icon"
                   disabled={isPending}
-                  onClick={() => onDelete(c.id, c.name)}
+                  onClick={() => setDeleting(c)}
                 >
                   <Trash2 className="w-4 h-4" />
                 </Button>
@@ -131,6 +129,16 @@ export function CategoriesManager({ categories }: Props) {
           )}
         </DialogContent>
       </Dialog>
+
+      <ConfirmDialog
+        open={!!deleting}
+        onOpenChange={(o) => !o && setDeleting(null)}
+        title={`Delete "${deleting?.name}"?`}
+        description="This will also delete all menu items in this category. This action cannot be undone."
+        confirmLabel="Delete category"
+        onConfirm={onConfirmDelete}
+        isPending={isPending}
+      />
     </div>
   );
 }

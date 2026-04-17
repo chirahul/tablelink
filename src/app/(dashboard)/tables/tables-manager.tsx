@@ -13,6 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { createTable, deleteTable } from "../admin-actions";
 import type { Table } from "@/lib/types";
 import { QrDialog } from "./qr-dialog";
@@ -31,18 +32,15 @@ export function TablesManager({
   const [isPending, startTransition] = useTransition();
   const [creating, setCreating] = useState(false);
   const [qrTable, setQrTable] = useState<Table | null>(null);
+  const [deleting, setDeleting] = useState<Table | null>(null);
 
-  function onDelete(id: string, tableNumber: string) {
-    if (
-      !confirm(
-        `Delete table ${tableNumber}? Orders assigned to this table will remain but won't be linkable.`
-      )
-    )
-      return;
+  function onConfirmDelete() {
+    if (!deleting) return;
     startTransition(async () => {
-      const r = await deleteTable(id);
+      const r = await deleteTable(deleting.id);
       if (r.success) toast.success("Table deleted");
       else toast.error(r.error);
+      setDeleting(null);
     });
   }
 
@@ -94,7 +92,7 @@ export function TablesManager({
                   size="sm"
                   variant="outline"
                   disabled={isPending}
-                  onClick={() => onDelete(t.id, t.table_number)}
+                  onClick={() => setDeleting(t)}
                 >
                   <Trash2 className="w-4 h-4" />
                 </Button>
@@ -109,6 +107,16 @@ export function TablesManager({
         restaurantSlug={restaurantSlug}
         restaurantName={restaurantName}
         onClose={() => setQrTable(null)}
+      />
+
+      <ConfirmDialog
+        open={!!deleting}
+        onOpenChange={(o) => !o && setDeleting(null)}
+        title={`Delete table ${deleting?.table_number}?`}
+        description="Existing orders for this table will remain but won't be linkable. This action cannot be undone."
+        confirmLabel="Delete table"
+        onConfirm={onConfirmDelete}
+        isPending={isPending}
       />
     </div>
   );

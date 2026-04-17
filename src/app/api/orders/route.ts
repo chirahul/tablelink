@@ -80,7 +80,7 @@ export async function POST(request: Request) {
   const menuItemIds = [...new Set(body.items.map((i) => i.menu_item_id))];
   const { data: menuItems, error: mErr } = await admin
     .from("menu_items")
-    .select("id, name, price, variants, is_available, restaurant_id")
+    .select("id, name, price, variants, addons, is_available, restaurant_id")
     .in("id", menuItemIds);
 
   if (mErr || !menuItems) {
@@ -130,18 +130,36 @@ export async function POST(request: Request) {
       );
     }
 
-    // Resolve variant price
+    // Resolve variant price — trust server DB, not client-submitted prices
     let unitPrice = Number(menuItem.price);
     if (item.variant && menuItem.variants) {
       const variants = menuItem.variants as Array<{ name: string; price: number }>;
       const found = variants.find((v) => v.name === item.variant);
-      if (found) unitPrice = Number(found.price);
+      if (!found) {
+        return NextResponse.json(
+          { error: `Unknown variant "${item.variant}" for ${menuItem.name}` },
+          { status: 400 }
+        );
+      }
+      unitPrice = Number(found.price);
     }
 
-    const addonTotal = (item.addons ?? []).reduce(
-      (sum, a) => sum + Number(a.price),
-      0
-    );
+    // Validate addons — match by name, use server-side prices
+    const menuAddons = (menuItem.addons ?? []) as Array<{ name: string; price: number }>;
+    const validatedAddons: MenuAddon[] = [];
+    let addonTotal = 0;
+    for (const clientAddon of item.addons ?? []) {
+      const serverAddon = menuAddons.find((a) => a.name === clientAddon.name);
+      if (!serverAddon) {
+        return NextResponse.json(
+          { error: `Unknown addon "${clientAddon.name}" for ${menuItem.name}` },
+          { status: 400 }
+        );
+      }
+      validatedAddons.push({ name: serverAddon.name, price: serverAddon.price });
+      addonTotal += Number(serverAddon.price);
+    }
+
     const lineTotal = (unitPrice + addonTotal) * item.quantity;
     subtotal += lineTotal;
 
@@ -150,7 +168,7 @@ export async function POST(request: Request) {
       quantity: item.quantity,
       unit_price: unitPrice,
       variant: item.variant,
-      addons: item.addons && item.addons.length > 0 ? item.addons : null,
+      addons: validatedAddons.length > 0 ? validatedAddons : null,
       notes: item.notes,
     });
   }
