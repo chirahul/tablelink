@@ -86,7 +86,7 @@ export default async function OrdersPage({ searchParams }: Props) {
               key={d}
               href={`/orders?status=${status}&days=${d}`}
               className={`px-3 py-1 rounded-full border ${
-                daysNum === d ? "bg-foreground text-background" : ""
+                daysNum === d ? "bg-primary text-primary-foreground" : ""
               }`}
             >
               {d === 1 ? "Today" : `${d}d`}
@@ -103,7 +103,7 @@ export default async function OrdersPage({ searchParams }: Props) {
             href={`/orders?status=${f.value}&days=${daysNum}`}
             className={`px-3 py-1 rounded-full text-xs border ${
               status === f.value
-                ? "bg-foreground text-background border-foreground"
+                ? "bg-primary text-primary-foreground border-primary"
                 : "hover:border-foreground/40"
             }`}
           >

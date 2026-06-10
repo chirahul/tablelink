@@ -51,7 +51,7 @@ export function RestaurantsList({ restaurants }: Props) {
             onClick={() => setFilter(f)}
             className={`px-3 py-1 rounded-full text-xs border capitalize ${
               filter === f
-                ? "bg-foreground text-background"
+                ? "bg-primary text-primary-foreground"
                 : "hover:border-foreground/40"
             }`}
           >

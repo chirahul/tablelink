@@ -83,7 +83,7 @@ export function MenuItemsManager({ items, categories }: Props) {
             onClick={() => setFilterCategory("all")}
             className={`px-3 py-1 rounded-full text-xs border ${
               filterCategory === "all"
-                ? "bg-foreground text-background"
+                ? "bg-primary text-primary-foreground"
                 : "hover:border-foreground/40"
             }`}
           >
@@ -97,7 +97,7 @@ export function MenuItemsManager({ items, categories }: Props) {
                 onClick={() => setFilterCategory(c.id)}
                 className={`px-3 py-1 rounded-full text-xs border ${
                   filterCategory === c.id
-                    ? "bg-foreground text-background"
+                    ? "bg-primary text-primary-foreground"
                     : "hover:border-foreground/40"
                 }`}
               >

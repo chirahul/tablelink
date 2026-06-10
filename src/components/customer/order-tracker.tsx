@@ -95,7 +95,7 @@ export function OrderTracker({ initialOrder }: Props) {
                   <div
                     className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 ${
                       isDone
-                        ? "bg-foreground text-background shadow-lg"
+                        ? "bg-primary text-primary-foreground shadow-lg"
                         : "bg-muted text-muted-foreground"
                     } ${isCurrent ? "ring-2 ring-offset-2 ring-foreground scale-110" : ""}`}
                   >
@@ -114,7 +114,7 @@ export function OrderTracker({ initialOrder }: Props) {
             {/* Progress line */}
             <div className="absolute top-4 left-0 right-0 h-0.5 bg-muted -z-0" />
             <div
-              className="absolute top-4 left-0 h-0.5 bg-foreground -z-0 transition-all duration-500"
+              className="absolute top-4 left-0 h-0.5 bg-primary -z-0 transition-all duration-500"
               style={{
                 width:
                   currentStepIndex >= 0

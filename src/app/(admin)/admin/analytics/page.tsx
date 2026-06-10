@@ -124,7 +124,7 @@ export default async function PlatformAnalyticsPage() {
                   className="flex-1 flex flex-col items-center gap-1 h-full justify-end"
                 >
                   <div
-                    className="w-full bg-foreground rounded-sm"
+                    className="w-full bg-primary rounded-sm"
                     style={{ height: `${h}%`, minHeight: d.orders ? 2 : 0 }}
                     title={`${d.orders} orders`}
                   />

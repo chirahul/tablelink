@@ -160,7 +160,7 @@ export default async function AnalyticsPage() {
                   title={`${d.date}: ${d.orders} orders, ${formatCurrency(d.revenue)}`}
                 >
                   <div
-                    className="w-full bg-foreground rounded-sm"
+                    className="w-full bg-primary rounded-sm"
                     style={{ height: `${h}%`, minHeight: d.orders ? 2 : 0 }}
                   />
                 </div>
@@ -188,7 +188,7 @@ export default async function AnalyticsPage() {
                   title={`${h}:00 — ${count} orders`}
                 >
                   <div
-                    className="w-full bg-foreground rounded-sm"
+                    className="w-full bg-primary rounded-sm"
                     style={{
                       height: `${(count / maxHour) * 100}%`,
                       minHeight: count ? 2 : 0,

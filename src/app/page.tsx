@@ -68,7 +68,7 @@ export default function HomePage() {
             <h1 className="text-5xl sm:text-6xl md:text-8xl font-bold tracking-tighter mb-6 leading-[0.9]">
               Scan.
               <br />
-              <span className="bg-gradient-to-r from-foreground via-foreground/80 to-foreground/50 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary via-primary to-accent-foreground bg-clip-text text-transparent">
                 Order. Eat.
               </span>
             </h1>
@@ -143,7 +143,7 @@ export default function HomePage() {
           <Reveal delay={0} variant="slideRight">
             <HoverLift>
               <div className="p-8 rounded-2xl border bg-card h-full group hover:border-foreground/20 transition-all duration-300">
-                <div className="w-12 h-12 rounded-xl bg-foreground text-background flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                   <QrCode className="w-6 h-6" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">QR to table</h3>
@@ -158,7 +158,7 @@ export default function HomePage() {
           <Reveal delay={0.1} variant="slideLeft">
             <HoverLift>
               <div className="p-8 rounded-2xl border bg-card h-full group hover:border-foreground/20 transition-all duration-300">
-                <div className="w-12 h-12 rounded-xl bg-foreground text-background flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                   <ChefHat className="w-6 h-6" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Real-time kitchen</h3>
@@ -181,7 +181,7 @@ export default function HomePage() {
             <StaggerItem key={f.title}>
               <HoverLift>
                 <div className="p-6 rounded-2xl border bg-card h-full group hover:border-foreground/20 transition-all duration-300">
-                  <div className="w-10 h-10 rounded-lg bg-foreground text-background flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <div className="w-10 h-10 rounded-lg bg-primary text-primary-foreground flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     {f.icon}
                   </div>
                   <h3 className="font-semibold mb-1">{f.title}</h3>
@@ -393,7 +393,7 @@ export default function HomePage() {
       {/* ============ FINAL CTA ============ */}
       <section className="container mx-auto px-4 py-20">
         <Reveal variant="scaleUp">
-          <div className="max-w-3xl mx-auto p-12 md:p-16 rounded-3xl bg-foreground text-background text-center relative overflow-hidden">
+          <div className="max-w-3xl mx-auto p-12 md:p-16 rounded-3xl bg-primary text-primary-foreground text-center relative overflow-hidden">
             {/* Gradient orb decorations */}
             <div className="absolute -top-24 -right-24 w-48 h-48 bg-white/5 rounded-full blur-3xl" />
             <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-white/5 rounded-full blur-3xl" />
