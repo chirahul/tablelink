@@ -55,6 +55,8 @@ export type MenuItem = {
   addons: MenuAddon[] | null;
   created_at: string;
   updated_at: string;
+  /** Derived at fetch time: among the most-reordered items for this restaurant. */
+  is_popular?: boolean;
 };
 
 export type MenuVariant = {

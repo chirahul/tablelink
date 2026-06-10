@@ -3,7 +3,7 @@
 import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/status-badge";
 import { Separator } from "@/components/ui/separator";
 import {
   Dialog,
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { VegIndicator } from "@/components/customer/veg-indicator";
 import { formatCurrency, formatRelativeTime } from "@/lib/format";
-import { ORDER_STATUS_COLORS, ORDER_STATUS_LABELS } from "@/lib/constants";
+import { ORDER_STATUS_LABELS } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 import type { OrderStatus } from "@/lib/types";
 
@@ -138,11 +138,7 @@ export function OrderDetailDialog({ orderId, onClose }: Props) {
                 <DialogTitle className="text-xl">
                   {order.order_number}
                 </DialogTitle>
-                <Badge
-                  className={`${ORDER_STATUS_COLORS[order.status] ?? ""} border-0 text-xs`}
-                >
-                  {ORDER_STATUS_LABELS[order.status] ?? order.status}
-                </Badge>
+                <StatusBadge status={order.status} />
               </div>
               <div className="text-sm text-muted-foreground">
                 Table {order.table.table_number} •{" "}

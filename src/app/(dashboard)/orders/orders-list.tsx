@@ -3,9 +3,8 @@
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/status-badge";
 import { formatCurrency, formatRelativeTime } from "@/lib/format";
-import { ORDER_STATUS_COLORS, ORDER_STATUS_LABELS } from "@/lib/constants";
 import { OrderDetailDialog } from "./order-detail-dialog";
 
 type OrderRow = {
@@ -85,11 +84,7 @@ export function OrdersList({ orders }: Props) {
                       {o.customer_name && ` • ${o.customer_name}`}
                     </div>
                   </div>
-                  <Badge
-                    className={`${ORDER_STATUS_COLORS[o.status] ?? ""} border-0 text-xs`}
-                  >
-                    {ORDER_STATUS_LABELS[o.status] ?? o.status}
-                  </Badge>
+                  <StatusBadge status={o.status} />
                 </div>
 
                 <div className="flex items-center gap-3">

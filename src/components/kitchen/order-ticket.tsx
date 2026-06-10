@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -68,6 +68,35 @@ export function OrderTicket({ order, onLocalUpdate }: Props) {
   const [expanded, setExpanded] = useState(false);
   const actions = ACTIONS_BY_STATUS[order.status] ?? [];
 
+  // Live elapsed time so the ticket escalates while it sits on the board.
+  // Start null to avoid a hydration mismatch, then tick every 30s.
+  const [now, setNow] = useState<number | null>(null);
+  useEffect(() => {
+    setNow(Date.now());
+    const t = setInterval(() => setNow(Date.now()), 30_000);
+    return () => clearInterval(t);
+  }, []);
+
+  const isActive = order.status !== "served" && order.status !== "cancelled";
+  const elapsedMin = now
+    ? (now - new Date(order.created_at).getTime()) / 60_000
+    : 0;
+  // High-contrast time-based escalation: neutral < 5m, amber 5–10m, red-pulse > 10m.
+  const escalation = !isActive
+    ? "border-l-4 border-l-transparent"
+    : elapsedMin > 10
+      ? "border-l-4 border-l-destructive animate-kds-pulse"
+      : elapsedMin > 5
+        ? "border-l-4 border-l-amber-500"
+        : "border-l-4 border-l-muted-foreground/30";
+  const elapsedColor = !isActive
+    ? "text-muted-foreground"
+    : elapsedMin > 10
+      ? "text-destructive font-semibold"
+      : elapsedMin > 5
+        ? "text-amber-600 font-medium"
+        : "text-muted-foreground";
+
   function updateStatus(next: OrderStatus) {
     // Optimistic update: move the card immediately. If the API call
     // fails, we'll roll back.
@@ -114,8 +143,8 @@ export function OrderTicket({ order, onLocalUpdate }: Props) {
 
   return (
     <div
-      className={`rounded-2xl border bg-card p-3.5 shadow-sm transition-all duration-300 hover:shadow-md ${
-        order.status === "pending" ? "ring-2 ring-yellow-400/60 shadow-yellow-100" : ""
+      className={`rounded-2xl border ${escalation} bg-card p-3.5 shadow-sm transition-all duration-300 hover:shadow-md ${
+        order.status === "pending" ? "ring-2 ring-primary/50" : ""
       }`}
     >
       {/* Header */}
@@ -129,7 +158,7 @@ export function OrderTicket({ order, onLocalUpdate }: Props) {
           </div>
         </div>
         <div className="flex flex-col items-end gap-1">
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+          <div className={`flex items-center gap-1 text-xs ${elapsedColor}`}>
             <Clock className="w-3 h-3" />
             {formatRelativeTime(order.created_at)}
           </div>

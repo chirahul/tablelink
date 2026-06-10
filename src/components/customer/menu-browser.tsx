@@ -9,6 +9,7 @@ import type { Category, MenuItem, Restaurant, Table } from "@/lib/types";
 import { MenuItemCard } from "./menu-item-card";
 import { ItemDetailModal } from "./item-detail-modal";
 import { CartBar, DesktopCartBar } from "./cart-bar";
+import { FloatingBottomNav } from "./floating-bottom-nav";
 
 type Props = {
   restaurant: Restaurant;
@@ -88,7 +89,7 @@ export function MenuBrowser({ restaurant, categories, items, table }: Props) {
             <div className="flex rounded-full border overflow-hidden text-xs">
               <button
                 onClick={() => setVegFilter("all")}
-                className={`px-3 py-1.5 ${vegFilter === "all" ? "bg-foreground text-background" : ""}`}
+                className={`px-3 py-1.5 ${vegFilter === "all" ? "bg-primary text-primary-foreground" : ""}`}
               >
                 All
               </button>
@@ -134,8 +135,8 @@ export function MenuBrowser({ restaurant, categories, items, table }: Props) {
                   disabled={!hasItems}
                   className={`shrink-0 px-3 py-1.5 rounded-full text-sm border transition-colors ${
                     activeCategoryId === c.id
-                      ? "bg-foreground text-background border-foreground"
-                      : "bg-card hover:border-foreground/40"
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-card hover:border-primary/40"
                   } ${!hasItems ? "opacity-40" : ""}`}
                 >
                   {c.name}
@@ -146,7 +147,7 @@ export function MenuBrowser({ restaurant, categories, items, table }: Props) {
         </div>
       </div>
 
-      <div className="container max-w-2xl mx-auto px-4 py-4 pb-28 md:pb-6">
+      <div className="container max-w-2xl mx-auto px-4 py-4 pb-40 md:pb-6">
         {!hasResults && (
           <p className="text-center py-12 text-muted-foreground">
             No items match your search.
@@ -176,6 +177,9 @@ export function MenuBrowser({ restaurant, categories, items, table }: Props) {
       </div>
 
       <CartBar />
+      <FloatingBottomNav
+        menuHref={`/menu/${restaurant.slug}${table ? `?table=${table.id}` : ""}`}
+      />
       <ItemDetailModal item={openItem} onClose={() => setOpenItem(null)} />
     </>
   );

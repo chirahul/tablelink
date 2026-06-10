@@ -143,7 +143,7 @@ export async function forgotPassword(formData: FormData): Promise<ActionResult> 
   const supabase = await createClient();
 
   const origin =
-    process.env.NEXT_PUBLIC_APP_URL || "https://tablelink-amber.vercel.app";
+    process.env.NEXT_PUBLIC_APP_URL || "https://thetablelynk.com";
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${origin}/reset-password`,

@@ -16,7 +16,7 @@ type Props = {
 
 type Mode = "choose" | "phone" | "otp" | "done";
 
-const STORAGE_KEY = "tablelink-customer-mode";
+const STORAGE_KEY = "tablelynk-customer-mode";
 
 export function WelcomeGate({ restaurantName, tableNumber, children }: Props) {
   const [mode, setMode] = useState<Mode | null>(null);

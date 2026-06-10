@@ -62,7 +62,7 @@ export default async function SuperAdminPage() {
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Platform Dashboard</h1>
         <p className="text-sm text-muted-foreground">
-          Across all restaurants on TableLink
+          Across all restaurants on TheTableLynk
         </p>
       </div>
 

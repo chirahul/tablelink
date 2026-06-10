@@ -34,7 +34,7 @@ export function QrDialog({
     const origin =
       typeof window !== "undefined"
         ? window.location.origin
-        : "https://tablelink-amber.vercel.app";
+        : "https://thetablelynk.com";
     const menuUrl = `${origin}/menu/${restaurantSlug}?table=${table.id}`;
     setUrl(menuUrl);
 

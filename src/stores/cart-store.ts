@@ -87,7 +87,7 @@ export const useCartStore = create<CartState & CartActions>()(
       },
     }),
     {
-      name: "tablelink-cart",
+      name: "tablelynk-cart",
     }
   )
 );

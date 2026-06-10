@@ -49,72 +49,74 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* TheTableLynk — warm "premium hospitality" palette (Material 3 derived) */
+  --background: #fff8f6; /* surface */
+  --foreground: #271813; /* on-surface */
+  --card: #ffffff; /* surface-container-lowest */
+  --card-foreground: #271813;
+  --popover: #ffffff;
+  --popover-foreground: #271813;
+  --primary: #e65100; /* signature orange */
+  --primary-foreground: #ffffff; /* on-primary */
+  --secondary: #ffe9e2; /* surface-container */
+  --secondary-foreground: #5a4138;
+  --muted: #fff1ec; /* surface-container-low */
+  --muted-foreground: #5a4138; /* on-surface-variant */
+  --accent: #ffdbcf; /* primary-fixed / container */
+  --accent-foreground: #802a00; /* on-primary-fixed-variant */
+  --destructive: #ba1a1a; /* error */
+  --border: #e3bfb2; /* outline-variant */
+  --input: #e3bfb2;
+  --ring: #e65100;
+  --chart-1: #e65100;
+  --chart-2: #cd4700;
+  --chart-3: #006a3c;
+  --chart-4: #f59e0b;
+  --chart-5: #a43700;
+  --radius: 0.5rem; /* ROUND_EIGHT — 8px */
+  --sidebar: #fff1ec;
+  --sidebar-foreground: #271813;
+  --sidebar-primary: #e65100;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ffdbcf;
+  --sidebar-accent-foreground: #802a00;
+  --sidebar-border: #e3bfb2;
+  --sidebar-ring: #e65100;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
+  /* Warm-tinted dark, keeps the orange identity */
+  --background: #1a120f;
+  --foreground: #f9ede8;
+  --card: #251a16;
+  --card-foreground: #f9ede8;
+  --popover: #251a16;
+  --popover-foreground: #f9ede8;
+  --primary: #ff8a4c; /* brightened orange for dark surfaces */
+  --primary-foreground: #4a1500;
+  --secondary: #38271f;
+  --secondary-foreground: #f9ede8;
+  --muted: #38271f;
+  --muted-foreground: #e3bfb2;
+  --accent: #4a2c1d;
+  --accent-foreground: #ffdbcf;
+  --destructive: #ffb4ab;
+  --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --ring: #ff8a4c;
+  --chart-1: #ff8a4c;
+  --chart-2: #ffb59a;
+  --chart-3: #80d99f;
+  --chart-4: #fbbf24;
+  --chart-5: #ffdbcf;
+  --sidebar: #201512;
+  --sidebar-foreground: #f9ede8;
+  --sidebar-primary: #ff8a4c;
+  --sidebar-primary-foreground: #4a1500;
+  --sidebar-accent: #38271f;
+  --sidebar-accent-foreground: #ffdbcf;
+  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-ring: #ff8a4c;
 }
 
 @layer utilities {
@@ -124,6 +126,20 @@
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  /* KDS escalation: pulsing left border for overdue tickets (> 10 min) */
+  @keyframes kds-pulse {
+    0%,
+    100% {
+      border-left-color: var(--destructive);
+    }
+    50% {
+      border-left-color: color-mix(in srgb, var(--destructive) 30%, transparent);
+    }
+  }
+  .animate-kds-pulse {
+    animation: kds-pulse 2s ease-in-out infinite;
   }
 }
 

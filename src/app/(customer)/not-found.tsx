@@ -15,7 +15,7 @@ export default function CustomerNotFound() {
           This restaurant doesn&apos;t exist or is no longer available.
         </p>
         <Link href="/">
-          <Button>Go to TableLink</Button>
+          <Button>Go to TheTableLynk</Button>
         </Link>
       </div>
     </div>

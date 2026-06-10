@@ -66,7 +66,7 @@ export function AnimatedKitchen() {
         <div className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
         <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
         <span className="ml-3 text-[10px] text-muted-foreground font-mono opacity-60">
-          tablelink.app/kitchen
+          thetablelynk.com/kitchen
         </span>
       </div>
 

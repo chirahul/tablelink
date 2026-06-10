@@ -281,7 +281,7 @@ export default function HomePage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground mb-5">Perfect for trying TableLink.</p>
+                <p className="text-sm text-muted-foreground mb-5">Perfect for trying TheTableLynk.</p>
                 <ul className="space-y-2.5 text-sm mb-8">
                   {["Unlimited menu items", "Up to 10 tables", "QR code generator", "Live kitchen display", "UPI + counter payments", "Basic analytics"].map((t) => (
                     <li key={t} className="flex items-start gap-2">
@@ -367,7 +367,7 @@ export default function HomePage() {
         </Reveal>
         <StaggerContainer className="max-w-2xl mx-auto space-y-3" staggerDelay={0.06}>
           {[
-            { q: "Do my customers need to download an app?", a: "No. TableLink runs entirely in the browser. Customers scan the QR code and the menu opens instantly — no install, no sign-up required." },
+            { q: "Do my customers need to download an app?", a: "No. TheTableLynk runs entirely in the browser. Customers scan the QR code and the menu opens instantly — no install, no sign-up required." },
             { q: "What hardware do I need?", a: "None. You just need a printer to print QR codes (regular paper works), and a tablet or laptop for the kitchen display." },
             { q: "How do payments work?", a: "Two options: customers can scan your UPI QR code at checkout (with the amount pre-filled), or they can pay at the counter. No payment gateway integration needed." },
             { q: "Can I customize my menu?", a: "Yes — add categories, items with photos, variants (Half/Full), add-ons (Extra cheese), dietary tags, veg/non-veg indicators. All from the admin dashboard." },
@@ -402,7 +402,7 @@ export default function HomePage() {
               Ready to skip the wait?
             </h2>
             <p className="opacity-70 mb-8 text-lg relative max-w-md mx-auto">
-              Join restaurants already using TableLink. Set up in 10 minutes, free forever on Starter.
+              Join restaurants already using TheTableLynk. Set up in 10 minutes, free forever on Starter.
             </p>
             <Link href="/register" className="relative">
               <Button size="lg" variant="secondary" className="min-w-52 h-12 text-base group">
@@ -446,7 +446,7 @@ export default function HomePage() {
               <ul className="space-y-2.5 text-sm text-muted-foreground">
                 <li className="flex items-center gap-2">
                   <Mail className="w-3.5 h-3.5" />
-                  <span>hello@tablelink.app</span>
+                  <span>hello@thetablelynk.com</span>
                 </li>
               </ul>
             </div>

@@ -20,35 +20,7 @@ export async function updateSession(request: NextRequest) {
     return supabaseResponse;
   }
 
-  const supabase = createServerClient(
-    supabaseUrl,
-    supabaseKey,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
-          supabaseResponse = NextResponse.next({
-            request,
-          });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          );
-        },
-      },
-    }
-  );
-
-  // Refresh the session - important for Server Components
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  // Protected routes: redirect to login if not authenticated.
+  // Determine whether this route actually needs auth BEFORE hitting Supabase.
   // IMPORTANT: these must NOT accidentally match customer-facing pages.
   // Specifically, /menu/[slug] is the CUSTOMER menu; admin menu management
   // lives at exactly /menu and /menu/categories only.
@@ -73,7 +45,53 @@ export async function updateSession(request: NextRequest) {
       (p) => pathname === p || pathname.startsWith(p + "/")
     );
 
-  if (isProtected && !user) {
+  // Public routes (landing, customer menu, login, etc.) never need the auth
+  // network call. Skipping it keeps these pages up even if Supabase is down.
+  if (!isProtected) {
+    return supabaseResponse;
+  }
+
+  const supabase = createServerClient(
+    supabaseUrl,
+    supabaseKey,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value)
+          );
+          supabaseResponse = NextResponse.next({
+            request,
+          });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options)
+          );
+        },
+      },
+    }
+  );
+
+  // Refresh the session - important for Server Components.
+  // Race against a short timeout so a slow/unreachable Supabase fails fast
+  // instead of hanging until Vercel kills the middleware (MIDDLEWARE_INVOCATION_TIMEOUT).
+  let user = null;
+  try {
+    const result = await Promise.race([
+      supabase.auth.getUser(),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("auth timeout")), 3000)
+      ),
+    ]);
+    user = result.data.user;
+  } catch {
+    // Treat as unauthenticated below; the redirect to /login is the safe default.
+    user = null;
+  }
+
+  if (!user) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.searchParams.set("redirect", pathname + request.nextUrl.search);

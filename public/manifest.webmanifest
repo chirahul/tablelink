@@ -1,6 +1,6 @@
 {
-  "name": "TableLink",
-  "short_name": "TableLink",
+  "name": "TheTableLynk",
+  "short_name": "TheTableLynk",
   "description": "Scan. Order. Eat. QR code-based table ordering for restaurants.",
   "start_url": "/",
   "display": "standalone",
