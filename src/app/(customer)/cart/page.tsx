@@ -75,14 +75,22 @@ export default function CartPage() {
     }
 
     startTransition(async () => {
+      // Attribute the order to the signed-in customer (if any) so it shows
+      // up in their order history.
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           restaurant_id: restaurant.id,
           table_id: tableId,
+          customer_id: user?.id ?? null,
           customer_name: customerName || null,
-          customer_phone: customerPhone || null,
+          customer_phone: customerPhone || user?.phone || null,
           notes: orderNotes || null,
           payment_method: payment,
           items: items.map((i) => ({

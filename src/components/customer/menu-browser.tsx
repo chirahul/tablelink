@@ -32,8 +32,8 @@ export function MenuBrowser({ restaurant, categories, items, table }: Props) {
 
   useEffect(() => {
     // Set cart context so it clears if user switches restaurants
-    setContext(restaurant.id, table?.id ?? "");
-  }, [restaurant.id, table?.id, setContext]);
+    setContext(restaurant.id, table?.id ?? "", restaurant.slug);
+  }, [restaurant.id, table?.id, restaurant.slug, setContext]);
 
   const filteredItems = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -177,9 +177,7 @@ export function MenuBrowser({ restaurant, categories, items, table }: Props) {
       </div>
 
       <CartBar />
-      <FloatingBottomNav
-        menuHref={`/menu/${restaurant.slug}${table ? `?table=${table.id}` : ""}`}
-      />
+      <FloatingBottomNav />
       <ItemDetailModal item={openItem} onClose={() => setOpenItem(null)} />
     </>
   );

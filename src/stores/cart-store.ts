@@ -6,6 +6,7 @@ type CartState = {
   items: CartItem[];
   restaurantId: string | null;
   tableId: string | null;
+  restaurantSlug: string | null;
 };
 
 type CartActions = {
@@ -13,7 +14,11 @@ type CartActions = {
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
-  setContext: (restaurantId: string, tableId: string) => void;
+  setContext: (
+    restaurantId: string,
+    tableId: string,
+    restaurantSlug?: string
+  ) => void;
   getSubtotal: () => number;
   getTax: (taxRate: number) => number;
   getTotal: (taxRate: number) => number;
@@ -26,14 +31,20 @@ export const useCartStore = create<CartState & CartActions>()(
       items: [],
       restaurantId: null,
       tableId: null,
+      restaurantSlug: null,
 
-      setContext: (restaurantId: string, tableId: string) => {
+      setContext: (
+        restaurantId: string,
+        tableId: string,
+        restaurantSlug?: string
+      ) => {
         const state = get();
+        const slug = restaurantSlug ?? state.restaurantSlug;
         // Clear cart if switching restaurants
         if (state.restaurantId && state.restaurantId !== restaurantId) {
-          set({ items: [], restaurantId, tableId });
+          set({ items: [], restaurantId, tableId, restaurantSlug: slug });
         } else {
-          set({ restaurantId, tableId });
+          set({ restaurantId, tableId, restaurantSlug: slug });
         }
       },
 
