@@ -10,6 +10,7 @@ export type OnboardingStatus = {
   hasCategories: boolean;
   hasMenuItems: boolean;
   hasTables: boolean;
+  hasReceivedOrder: boolean;
   menuSlug: string;
 };
 
@@ -35,9 +36,16 @@ const STEPS = [
   {
     key: "hasTables" as const,
     title: "Create tables & print QR codes",
-    desc: "Add your tables, then download or print a unique QR code for each one.",
+    desc: "Add tables, print a QR for each, and place them on the tables.",
     href: "/tables",
     cta: "Add tables",
+  },
+  {
+    key: "hasReceivedOrder" as const,
+    title: "Receive your first order",
+    desc: "Once a customer scans a QR and orders, it shows up in Orders.",
+    href: "/orders",
+    cta: "View orders",
   },
 ];
 

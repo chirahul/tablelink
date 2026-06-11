@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { fetchMenuBySlug } from "@/lib/fetch-menu";
+import { logMenuEvent } from "@/lib/track";
 import { MenuBrowser } from "@/components/customer/menu-browser";
 import { WelcomeGate } from "@/components/customer/welcome-gate";
 
@@ -25,6 +26,13 @@ export default async function MenuPage({ params, searchParams }: Props) {
 
   const data = await fetchMenuBySlug(slug, table);
   if (!data) notFound();
+
+  // Lightweight analytics: log this menu load (QR scan vs shared link).
+  await logMenuEvent({
+    restaurantId: data.restaurant.id,
+    tableId: data.table?.id ?? null,
+    source: data.table ? "qr" : "link",
+  });
 
   if (data.categories.length === 0 || data.items.length === 0) {
     return (

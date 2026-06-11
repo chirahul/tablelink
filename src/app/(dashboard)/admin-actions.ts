@@ -265,6 +265,117 @@ export async function deleteMenuItem(id: string): Promise<ActionResult> {
   return { success: true };
 }
 
+export async function duplicateMenuItem(id: string): Promise<ActionResult> {
+  const restaurantId = await requireRestaurantId();
+  if (!restaurantId) return { success: false, error: "Not authenticated" };
+
+  const supabase = await createClient();
+  const { data: item } = await supabase
+    .from("menu_items")
+    .select("*")
+    .eq("id", id)
+    .eq("restaurant_id", restaurantId)
+    .maybeSingle();
+  if (!item) return { success: false, error: "Item not found" };
+
+  const {
+    id: _id,
+    created_at: _c,
+    updated_at: _u,
+    ...rest
+  } = item as Record<string, unknown>;
+  const { error } = await supabase
+    .from("menu_items")
+    .insert({ ...rest, name: `${item.name} (copy)` });
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/menu");
+  return { success: true };
+}
+
+/** Persist a new ordering by writing each id's index to sort_order. */
+export async function reorderMenuItems(ids: string[]): Promise<ActionResult> {
+  const restaurantId = await requireRestaurantId();
+  if (!restaurantId) return { success: false, error: "Not authenticated" };
+
+  const supabase = await createClient();
+  const results = await Promise.all(
+    ids.map((id, idx) =>
+      supabase
+        .from("menu_items")
+        .update({ sort_order: idx })
+        .eq("id", id)
+        .eq("restaurant_id", restaurantId)
+    )
+  );
+  const failed = results.find((r) => r.error);
+  if (failed?.error) return { success: false, error: failed.error.message };
+
+  revalidatePath("/menu");
+  return { success: true };
+}
+
+export async function reorderCategories(ids: string[]): Promise<ActionResult> {
+  const restaurantId = await requireRestaurantId();
+  if (!restaurantId) return { success: false, error: "Not authenticated" };
+
+  const supabase = await createClient();
+  const results = await Promise.all(
+    ids.map((id, idx) =>
+      supabase
+        .from("categories")
+        .update({ sort_order: idx })
+        .eq("id", id)
+        .eq("restaurant_id", restaurantId)
+    )
+  );
+  const failed = results.find((r) => r.error);
+  if (failed?.error) return { success: false, error: failed.error.message };
+
+  revalidatePath("/menu");
+  revalidatePath("/menu/categories");
+  return { success: true };
+}
+
+export async function bulkSetMenuItemsAvailability(
+  ids: string[],
+  is_available: boolean
+): Promise<ActionResult> {
+  const restaurantId = await requireRestaurantId();
+  if (!restaurantId) return { success: false, error: "Not authenticated" };
+  if (ids.length === 0) return { success: true };
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("menu_items")
+    .update({ is_available })
+    .in("id", ids)
+    .eq("restaurant_id", restaurantId);
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/menu");
+  return { success: true };
+}
+
+export async function bulkDeleteMenuItems(
+  ids: string[]
+): Promise<ActionResult> {
+  const restaurantId = await requireRestaurantId();
+  if (!restaurantId) return { success: false, error: "Not authenticated" };
+  if (ids.length === 0) return { success: true };
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("menu_items")
+    .delete()
+    .in("id", ids)
+    .eq("restaurant_id", restaurantId);
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/menu");
+  return { success: true };
+}
+
 // ============================================================
 // TABLES
 // ============================================================
@@ -303,6 +414,96 @@ export async function deleteTable(id: string): Promise<ActionResult> {
   return { success: true };
 }
 
+export async function updateTable(
+  id: string,
+  formData: FormData
+): Promise<ActionResult> {
+  const restaurantId = await requireRestaurantId();
+  if (!restaurantId) return { success: false, error: "Not authenticated" };
+
+  const table_number = String(formData.get("table_number") ?? "").trim();
+  const capacityRaw = formData.get("capacity");
+  const capacity = capacityRaw ? Number(capacityRaw) : null;
+  if (!table_number) {
+    return { success: false, error: "Table number is required" };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("tables")
+    .update({ table_number, capacity })
+    .eq("id", id)
+    .eq("restaurant_id", restaurantId);
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/tables");
+  return { success: true };
+}
+
+export async function setTableActive(
+  id: string,
+  is_active: boolean
+): Promise<ActionResult> {
+  const restaurantId = await requireRestaurantId();
+  if (!restaurantId) return { success: false, error: "Not authenticated" };
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("tables")
+    .update({ is_active })
+    .eq("id", id)
+    .eq("restaurant_id", restaurantId);
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/tables");
+  return { success: true };
+}
+
+export async function duplicateTable(id: string): Promise<ActionResult> {
+  const restaurantId = await requireRestaurantId();
+  if (!restaurantId) return { success: false, error: "Not authenticated" };
+
+  const supabase = await createClient();
+  const { data: table } = await supabase
+    .from("tables")
+    .select("table_number, capacity")
+    .eq("id", id)
+    .eq("restaurant_id", restaurantId)
+    .maybeSingle();
+  if (!table) return { success: false, error: "Table not found" };
+
+  const { error } = await supabase.from("tables").insert({
+    restaurant_id: restaurantId,
+    table_number: `${table.table_number} (copy)`,
+    capacity: table.capacity,
+  });
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/tables");
+  return { success: true };
+}
+
+export async function reorderTables(ids: string[]): Promise<ActionResult> {
+  const restaurantId = await requireRestaurantId();
+  if (!restaurantId) return { success: false, error: "Not authenticated" };
+
+  const supabase = await createClient();
+  const results = await Promise.all(
+    ids.map((id, idx) =>
+      supabase
+        .from("tables")
+        .update({ sort_order: idx })
+        .eq("id", id)
+        .eq("restaurant_id", restaurantId)
+    )
+  );
+  const failed = results.find((r) => r.error);
+  if (failed?.error) return { success: false, error: failed.error.message };
+
+  revalidatePath("/tables");
+  return { success: true };
+}
+
 // ============================================================
 // RESTAURANT SETTINGS
 // ============================================================
@@ -320,14 +521,39 @@ export async function updateRestaurantSettings(
   const email = String(formData.get("email") ?? "").trim() || null;
   const upi_id = String(formData.get("upi_id") ?? "").trim() || null;
   const logo_url = String(formData.get("logo_url") ?? "").trim() || null;
+  const cover_image_url =
+    String(formData.get("cover_image_url") ?? "").trim() || null;
   const upi_qr_image_url =
     String(formData.get("upi_qr_image_url") ?? "").trim() || null;
   const tax_rate = Number(formData.get("tax_rate") ?? 0);
+  const currency = String(formData.get("currency") ?? "INR").trim() || "INR";
+  const gst_number = String(formData.get("gst_number") ?? "").trim() || null;
+  const timezone = String(formData.get("timezone") ?? "").trim() || null;
+  const google_maps_url =
+    String(formData.get("google_maps_url") ?? "").trim() || null;
+  const is_active = formData.get("is_active") !== "false"; // default open
+
+  const social_links = {
+    instagram: String(formData.get("social_instagram") ?? "").trim() || undefined,
+    facebook: String(formData.get("social_facebook") ?? "").trim() || undefined,
+    website: String(formData.get("social_website") ?? "").trim() || undefined,
+  };
+
+  // opening_hours arrives as a JSON string from the editor (optional).
+  let opening_hours: Record<string, { open: string; close: string }> | undefined;
+  const ohRaw = formData.get("opening_hours");
+  if (typeof ohRaw === "string" && ohRaw.trim()) {
+    try {
+      opening_hours = JSON.parse(ohRaw);
+    } catch {
+      return { success: false, error: "Invalid opening hours" };
+    }
+  }
 
   if (!name) return { success: false, error: "Restaurant name is required" };
 
   const settings: RestaurantSettings = {
-    currency: "INR",
+    currency,
     tax_rate: Math.max(0, Math.min(100, tax_rate)),
     accept_online_payment: !!upi_id || !!upi_qr_image_url,
   };
@@ -343,8 +569,15 @@ export async function updateRestaurantSettings(
       email,
       upi_id,
       logo_url,
+      cover_image_url,
       upi_qr_image_url,
+      gst_number,
+      timezone,
+      google_maps_url,
+      social_links,
+      is_active,
       settings,
+      ...(opening_hours ? { opening_hours } : {}),
     })
     .eq("id", restaurantId);
 

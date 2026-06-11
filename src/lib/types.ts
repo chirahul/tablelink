@@ -17,9 +17,27 @@ export type Restaurant = {
   is_active: boolean;
   opening_hours: Record<string, { open: string; close: string }>;
   settings: RestaurantSettings;
+  gst_number: string | null;
+  timezone: string | null;
+  social_links: SocialLinks;
+  google_maps_url: string | null;
   owner_id: string;
   created_at: string;
   updated_at: string;
+};
+
+export type SocialLinks = {
+  instagram?: string;
+  facebook?: string;
+  website?: string;
+};
+
+export type MenuEvent = {
+  id: string;
+  restaurant_id: string;
+  table_id: string | null;
+  source: "qr" | "link" | "direct";
+  created_at: string;
 };
 
 export type RestaurantSettings = {
@@ -76,6 +94,7 @@ export type Table = {
   qr_code_url: string | null;
   is_active: boolean;
   capacity: number | null;
+  sort_order: number;
   created_at: string;
   updated_at: string;
 };

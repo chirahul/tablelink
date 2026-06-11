@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
-import { Download, Printer } from "lucide-react";
+import { Download, Printer, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { buildQrPdf, downloadBlob } from "@/lib/qr-pdf";
 import {
   Dialog,
   DialogContent,
@@ -51,6 +52,15 @@ export function QrDialog({
     a.href = dataUrl;
     a.download = `${restaurantSlug}-table-${table.table_number}.png`;
     a.click();
+  }
+
+  function downloadPdf() {
+    if (!dataUrl || !table) return;
+    const blob = buildQrPdf(
+      [{ tableNumber: table.table_number, dataUrl }],
+      restaurantName
+    );
+    downloadBlob(blob, `${restaurantSlug}-table-${table.table_number}.pdf`);
   }
 
   function print() {
@@ -117,12 +127,15 @@ export function QrDialog({
               </p>
             </div>
 
-            <DialogFooter className="gap-2">
+            <DialogFooter className="gap-2 flex-wrap">
               <Button variant="outline" onClick={print}>
                 <Printer className="w-4 h-4 mr-1" /> Print
               </Button>
+              <Button variant="outline" onClick={downloadPdf}>
+                <FileDown className="w-4 h-4 mr-1" /> PDF
+              </Button>
               <Button onClick={download}>
-                <Download className="w-4 h-4 mr-1" /> Download PNG
+                <Download className="w-4 h-4 mr-1" /> PNG
               </Button>
             </DialogFooter>
           </>
