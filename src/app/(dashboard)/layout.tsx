@@ -23,15 +23,15 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex min-h-screen">
-      {/* Desktop sidebar */}
-      <aside className="hidden md:flex w-64 flex-col border-r bg-muted/20">
-        <div className="flex h-16 items-center border-b px-6">
+      {/* Desktop sidebar — pinned full height; nav scrolls, logout stays put */}
+      <aside className="hidden md:flex w-64 flex-col border-r bg-muted/20 sticky top-0 h-screen">
+        <div className="flex h-16 items-center border-b px-6 shrink-0">
           <Link href="/dashboard" className="font-bold text-lg tracking-tight">
             {APP_NAME}
           </Link>
         </div>
         <SidebarNav />
-        <div className="border-t p-4 space-y-2">
+        <div className="border-t p-4 space-y-2 shrink-0">
           <p className="text-xs text-muted-foreground truncate px-3">
             {user.email}
           </p>
