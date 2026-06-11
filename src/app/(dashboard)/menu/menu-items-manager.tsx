@@ -450,23 +450,23 @@ export function MenuItemsManager({ items, categories }: Props) {
 
       {/* Create */}
       <Dialog open={creating} onOpenChange={setCreating}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <MenuItemForm
             categories={categories}
             defaultCategoryId={filterCategory !== "all" ? filterCategory : undefined}
-            onDone={(s) => s && setCreating(false)}
+            onDone={() => setCreating(false)}
           />
         </DialogContent>
       </Dialog>
 
       {/* Edit */}
       <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           {editing && (
             <MenuItemForm
               item={editing}
               categories={categories}
-              onDone={(s) => s && setEditing(null)}
+              onDone={() => setEditing(null)}
             />
           )}
         </DialogContent>

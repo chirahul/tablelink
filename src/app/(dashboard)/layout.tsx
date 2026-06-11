@@ -1,6 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { APP_NAME } from "@/lib/constants";
+import logo from "@/assets/logo.png";
 import { logout } from "../(auth)/actions";
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
@@ -26,9 +28,14 @@ export default async function DashboardLayout({
       {/* Desktop sidebar — fixed full height (reliable on iPad/iOS); nav
           scrolls internally, logout stays pinned at the bottom */}
       <aside className="hidden md:flex md:fixed md:inset-y-0 md:left-0 z-30 w-64 flex-col border-r bg-muted/20">
-        <div className="flex h-16 items-center border-b px-6 shrink-0">
-          <Link href="/dashboard" className="font-bold text-lg tracking-tight">
-            {APP_NAME}
+        <div className="flex h-16 items-center border-b px-4 shrink-0">
+          <Link href="/dashboard" aria-label={APP_NAME}>
+            <Image
+              src={logo}
+              alt={APP_NAME}
+              className="h-11 w-auto rounded-md"
+              priority
+            />
           </Link>
         </div>
         <SidebarNav />
@@ -55,8 +62,8 @@ export default async function DashboardLayout({
         <header className="flex h-16 items-center justify-between border-b px-4 md:hidden bg-background/80 backdrop-blur-xl">
           <div className="flex items-center gap-2">
             <MobileNav userEmail={user.email ?? null} />
-            <Link href="/dashboard" className="font-bold text-lg tracking-tight">
-              {APP_NAME}
+            <Link href="/dashboard" aria-label={APP_NAME}>
+              <Image src={logo} alt={APP_NAME} className="h-9 w-auto rounded-md" />
             </Link>
           </div>
           <form action={logout}>

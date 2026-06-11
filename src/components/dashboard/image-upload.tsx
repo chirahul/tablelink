@@ -5,12 +5,14 @@ import { Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { uploadImage } from "@/app/(dashboard)/admin-actions";
+import { cn } from "@/lib/utils";
 
 type Props = {
   value: string | null;
   onChange: (url: string | null) => void;
   label?: string;
   aspectRatio?: "square" | "video" | "wide";
+  size?: "sm" | "lg";
 };
 
 const ASPECT_CLASSES: Record<string, string> = {
@@ -24,12 +26,19 @@ export function ImageUpload({
   onChange,
   label = "Image",
   aspectRatio = "square",
+  size = "sm",
 }: Props) {
   const [isPending, startTransition] = useTransition();
   const [preview, setPreview] = useState(value);
+  const [dragOver, setDragOver] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const widthClass = size === "lg" ? "w-56" : "w-40";
 
   function handleFile(file: File) {
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please choose an image file");
+      return;
+    }
     const objectUrl = URL.createObjectURL(file);
     setPreview(objectUrl);
 
@@ -60,18 +69,23 @@ export function ImageUpload({
     <div className="space-y-2">
       <div className="text-sm font-medium">{label}</div>
       {preview ? (
-        <div className="relative w-40">
+        <div className={cn("relative", widthClass)}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={preview}
             alt="Preview"
-            className={`w-40 ${ASPECT_CLASSES[aspectRatio]} object-cover rounded-lg border`}
+            className={cn(
+              widthClass,
+              ASPECT_CLASSES[aspectRatio],
+              "object-cover rounded-lg border"
+            )}
           />
           <button
             type="button"
             onClick={clear}
             disabled={isPending}
             className="absolute top-1 right-1 p-1 bg-background border rounded-full shadow-sm hover:bg-destructive hover:text-destructive-foreground"
+            aria-label="Remove image"
           >
             <X className="w-3 h-3" />
           </button>
@@ -81,10 +95,28 @@ export function ImageUpload({
           type="button"
           disabled={isPending}
           onClick={() => inputRef.current?.click()}
-          className={`w-40 ${ASPECT_CLASSES[aspectRatio]} rounded-lg border-2 border-dashed flex flex-col items-center justify-center gap-1 text-xs text-muted-foreground hover:border-foreground/40 hover:bg-accent`}
+          onDragOver={(e) => {
+            e.preventDefault();
+            setDragOver(true);
+          }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setDragOver(false);
+            const file = e.dataTransfer.files?.[0];
+            if (file) handleFile(file);
+          }}
+          className={cn(
+            widthClass,
+            ASPECT_CLASSES[aspectRatio],
+            "rounded-lg border-2 border-dashed flex flex-col items-center justify-center gap-1.5 text-xs text-muted-foreground transition-colors",
+            dragOver
+              ? "border-primary bg-primary/5 text-primary"
+              : "hover:border-foreground/40 hover:bg-accent"
+          )}
         >
           <Upload className="w-5 h-5" />
-          {isPending ? "Uploading..." : "Upload image"}
+          {isPending ? "Uploading..." : "Upload or drop image"}
         </button>
       )}
 

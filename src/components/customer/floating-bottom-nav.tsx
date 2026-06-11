@@ -85,9 +85,9 @@ export function FloatingBottomNav() {
 
   return (
     <nav
-      className="md:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[min(92%,360px)]
+      className="md:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-50 max-w-[92%]
                  bg-background/80 backdrop-blur-md border border-border rounded-full shadow-lg
-                 px-6 py-2.5 flex justify-between items-center"
+                 px-8 py-2.5 inline-flex items-center justify-center gap-9"
       aria-label="Primary"
     >
       {tabs.map((tab) => {
