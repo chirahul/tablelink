@@ -33,7 +33,7 @@ type Action = {
   variant?: "default" | "destructive" | "outline" | "secondary";
 };
 
-const ACTIONS_BY_STATUS: Record<OrderStatus, Action[]> = {
+export const ACTIONS_BY_STATUS: Record<OrderStatus, Action[]> = {
   pending: [
     { label: "Accept", next: "confirmed" },
     { label: "Reject", next: "cancelled", variant: "outline" },

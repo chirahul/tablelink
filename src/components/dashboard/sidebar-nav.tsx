@@ -29,7 +29,7 @@ export function isNavActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(href + "/");
 }
 
-export function SidebarNav() {
+export function SidebarNav({ collapsed = false }: { collapsed?: boolean }) {
   const pathname = usePathname();
   return (
     <nav className="flex-1 min-h-0 overflow-y-auto px-3 py-4 space-y-0.5">
@@ -40,15 +40,17 @@ export function SidebarNav() {
             key={href}
             href={href}
             aria-current={active ? "page" : undefined}
+            title={collapsed ? label : undefined}
             className={cn(
               "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
+              collapsed && "justify-center px-0",
               active
                 ? "bg-accent text-foreground"
                 : "text-muted-foreground hover:text-foreground hover:bg-accent"
             )}
           >
-            <Icon className="w-4 h-4" />
-            {label}
+            <Icon className="w-4 h-4 shrink-0" />
+            {!collapsed && label}
           </Link>
         );
       })}

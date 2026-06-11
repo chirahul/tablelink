@@ -14,19 +14,20 @@ import { StatCard } from "@/components/shared/stat-card";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/format";
 import { OrdersList } from "./orders-list";
-import type { OrderStatus } from "@/lib/types";
+import { OrdersFilters } from "./orders-filters";
 
 export const metadata: Metadata = {
   title: "Orders",
 };
 
 type Props = {
-  searchParams: Promise<{ status?: OrderStatus | "all"; days?: string }>;
+  searchParams: Promise<{ status?: string; days?: string }>;
 };
 
-const STATUS_FILTERS: Array<{ label: string; value: OrderStatus | "all" }> = [
+const STATUS_FILTERS = [
+  { label: "Active", value: "active" },
   { label: "All", value: "all" },
-  { label: "Active", value: "pending" },
+  { label: "New", value: "pending" },
   { label: "Preparing", value: "preparing" },
   { label: "Ready", value: "ready" },
   { label: "Served", value: "served" },
@@ -40,7 +41,7 @@ const DAY_OPTIONS = [
 ];
 
 export default async function OrdersPage({ searchParams }: Props) {
-  const { status = "all", days = "1" } = await searchParams;
+  const { status = "active", days = "1" } = await searchParams;
 
   const supabase = await createClient();
   const {
@@ -79,6 +80,9 @@ export default async function OrdersPage({ searchParams }: Props) {
     all.filter((o) => pred(o.status)).length;
   const counts: Record<string, number> = {
     all: all.length,
+    active: countBy((s) =>
+      ["pending", "confirmed", "preparing", "ready"].includes(s)
+    ),
     pending: countBy((s) => s === "pending" || s === "confirmed"),
     preparing: countBy((s) => s === "preparing"),
     ready: countBy((s) => s === "ready"),
@@ -100,12 +104,12 @@ export default async function OrdersPage({ searchParams }: Props) {
     .order("created_at", { ascending: false })
     .limit(200);
 
-  if (status !== "all") {
-    if (status === "pending") {
-      query = query.in("status", ["pending", "confirmed"]);
-    } else {
-      query = query.eq("status", status);
-    }
+  if (status === "active") {
+    query = query.in("status", ["pending", "confirmed", "preparing", "ready"]);
+  } else if (status === "pending") {
+    query = query.in("status", ["pending", "confirmed"]);
+  } else if (status !== "all") {
+    query = query.eq("status", status);
   }
 
   const { data: orders } = await query;
@@ -123,21 +127,15 @@ export default async function OrdersPage({ searchParams }: Props) {
             Ordering System Online
           </span>
         </div>
-        <div className="inline-flex items-center gap-1 p-1 rounded-full bg-muted text-sm">
-          {DAY_OPTIONS.map(({ d, label }) => (
-            <Link
-              key={d}
-              href={`/orders?status=${status}&days=${d}`}
-              className={`px-3 py-1 rounded-full transition-colors ${
-                daysNum === d
-                  ? "bg-primary text-primary-foreground font-semibold shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {label}
-            </Link>
-          ))}
-        </div>
+        <OrdersFilters
+          status={status}
+          days={daysNum}
+          statusOptions={STATUS_FILTERS.map((f) => ({
+            ...f,
+            count: counts[f.value] ?? 0,
+          }))}
+          dayOptions={DAY_OPTIONS}
+        />
       </div>
 
       {/* Summary cards */}
@@ -161,35 +159,6 @@ export default async function OrdersPage({ searchParams }: Props) {
           label={daysNum === 1 ? "Revenue Today" : `Revenue (${daysNum}d)`}
           value={formatCurrency(revenue)}
         />
-      </div>
-
-      {/* Status filter pills with counts */}
-      <div className="flex gap-2 flex-wrap">
-        {STATUS_FILTERS.map((f) => {
-          const active = status === f.value;
-          return (
-            <Link
-              key={f.value}
-              href={`/orders?status=${f.value}&days=${daysNum}`}
-              className={`px-3 py-1 rounded-full text-xs border transition-colors ${
-                active
-                  ? "bg-primary text-primary-foreground border-primary"
-                  : "hover:border-primary/40 hover:bg-accent"
-              }`}
-            >
-              {f.label} ({counts[f.value] ?? 0})
-            </Link>
-          );
-        })}
-      </div>
-
-      {/* Column header (kept visible even when empty for layout stability) */}
-      <div className="hidden md:grid grid-cols-12 gap-3 px-4 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-        <div className="col-span-4">Order</div>
-        <div className="col-span-2">Table</div>
-        <div className="col-span-2">Items</div>
-        <div className="col-span-2">Total</div>
-        <div className="col-span-2">Status</div>
       </div>
 
       {isEmpty ? (

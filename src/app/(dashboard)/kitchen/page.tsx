@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
-import { KitchenBoard } from "@/components/kitchen/kitchen-board";
+import { KitchenView } from "@/components/kitchen/kitchen-view";
 import type { KitchenOrder } from "@/components/kitchen/order-ticket";
 
 export const metadata: Metadata = {
@@ -44,7 +44,7 @@ export default async function KitchenPage() {
 
   return (
     <div className="h-[calc(100vh-8rem)]">
-      <KitchenBoard
+      <KitchenView
         restaurantId={restaurant.id}
         initialOrders={(orders ?? []) as unknown as KitchenOrder[]}
       />

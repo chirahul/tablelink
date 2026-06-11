@@ -162,6 +162,11 @@
   .animate-kds-pulse {
     animation: kds-pulse 2s ease-in-out infinite;
   }
+
+  /* Kitchen TV / fullscreen — scale everything up for distance viewing */
+  .kds-tv {
+    zoom: 1.3;
+  }
 }
 
 @layer base {
