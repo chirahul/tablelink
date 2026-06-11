@@ -133,13 +133,13 @@ export function KitchenBoard({ restaurantId, initialOrders }: Props) {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 flex-1 min-h-0">
+      <div className="flex gap-3 overflow-x-auto lg:grid lg:grid-cols-4 lg:overflow-visible flex-1 min-h-0 pb-1">
         {COLUMNS.map((col) => {
           const list = ordersByStatus(col.statuses);
           return (
             <div
               key={col.title}
-              className={`rounded-2xl border ${col.accent} flex flex-col min-h-[200px] lg:min-h-0`}
+              className={`rounded-2xl border ${col.accent} flex flex-col min-h-0 w-[82vw] sm:w-80 lg:w-auto shrink-0`}
             >
               <div className="px-4 py-3 font-semibold text-sm flex items-center justify-between">
                 <span>{col.title}</span>

@@ -59,6 +59,8 @@ export default function CartPage() {
     }
   }, [restaurantId, tableId]);
 
+  const phoneValid =
+    !customerPhone || /^[+]?[\d\s-]{7,15}$/.test(customerPhone.trim());
   const subtotal = getSubtotal();
   const taxRate = restaurant?.settings?.tax_rate ?? 0;
   const tax = subtotal * (taxRate / 100);
@@ -185,7 +187,7 @@ export default function CartPage() {
                       onClick={() =>
                         updateQuantity(item.id, item.quantity - 1)
                       }
-                      className="p-1.5 hover:bg-accent"
+                      className="p-2.5 hover:bg-accent"
                     >
                       <Minus className="w-3 h-3" />
                     </button>
@@ -197,7 +199,7 @@ export default function CartPage() {
                       onClick={() =>
                         updateQuantity(item.id, item.quantity + 1)
                       }
-                      className="p-1.5 hover:bg-accent"
+                      className="p-2.5 hover:bg-accent"
                     >
                       <Plus className="w-3 h-3" />
                     </button>
@@ -244,7 +246,13 @@ export default function CartPage() {
             placeholder="+91 98765 43210"
             value={customerPhone}
             onChange={(e) => setCustomerPhone(e.target.value)}
+            aria-invalid={!phoneValid}
           />
+          {!phoneValid && (
+            <p className="text-xs text-destructive">
+              Enter a valid phone number, or leave it blank.
+            </p>
+          )}
         </div>
         <div className="space-y-2">
           <Label htmlFor="order_notes">Special instructions</Label>
@@ -325,17 +333,22 @@ export default function CartPage() {
       </div>
 
       {/* Fixed place order button on mobile */}
-      <div className="fixed bottom-0 left-0 right-0 p-3 bg-background border-t md:static md:p-0 md:mt-6 md:border-0">
+      <div className="fixed bottom-0 left-0 right-0 p-3 bg-background border-t md:static md:p-0 md:mt-6 md:border-0 space-y-2">
+        {!tableId && (
+          <p className="text-xs text-center text-muted-foreground">
+            Scan the QR code on your table to place an order.
+          </p>
+        )}
         <Button
           size="lg"
           className="w-full"
-          disabled={isPending || !restaurant || !tableId}
+          disabled={isPending || !restaurant || !tableId || !phoneValid}
           onClick={handlePlaceOrder}
         >
           {isPending
             ? "Placing order..."
             : !tableId
-              ? "No table selected"
+              ? "Scan your table's QR to order"
               : `Place Order • ${formatCurrency(total)}`}
         </Button>
       </div>

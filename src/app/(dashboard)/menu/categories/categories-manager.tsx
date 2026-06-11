@@ -99,6 +99,7 @@ export function CategoriesManager({ categories }: Props) {
                 <Button
                   variant="outline"
                   size="icon"
+                  aria-label={`Edit ${c.name}`}
                   onClick={() => setEditing(c)}
                 >
                   <Pencil className="w-4 h-4" />
@@ -106,6 +107,7 @@ export function CategoriesManager({ categories }: Props) {
                 <Button
                   variant="outline"
                   size="icon"
+                  aria-label={`Delete ${c.name}`}
                   disabled={isPending}
                   onClick={() => setDeleting(c)}
                 >

@@ -111,6 +111,7 @@ export function OrderDetailDialog({ orderId, onClose }: Props) {
         return;
       }
       setOrder((prev) => (prev ? { ...prev, payment_status: next } : prev));
+      toast.success(next === "paid" ? "Marked as paid" : "Marked as unpaid");
     });
   }
 

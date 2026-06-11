@@ -111,17 +111,20 @@ export function OrderTracker({ initialOrder }: Props) {
                 </div>
               );
             })}
-            {/* Progress line */}
-            <div className="absolute top-4 left-0 right-0 h-0.5 bg-muted -z-0" />
-            <div
-              className="absolute top-4 left-0 h-0.5 bg-primary -z-0 transition-all duration-500"
-              style={{
-                width:
-                  currentStepIndex >= 0
-                    ? `${(currentStepIndex / (STATUS_STEPS.length - 1)) * 100}%`
-                    : "0%",
-              }}
-            />
+            {/* Progress line — inset to the first/last node centers (w-9 circles) */}
+            <div className="absolute top-[18px] left-[18px] right-[18px] h-0.5 -z-0">
+              <div className="absolute inset-0 bg-muted" />
+              <div
+                className="absolute inset-y-0 left-0 bg-primary transition-all duration-500"
+                style={{
+                  width: `${
+                    (Math.max(0, currentStepIndex) /
+                      (STATUS_STEPS.length - 1)) *
+                    100
+                  }%`,
+                }}
+              />
+            </div>
           </div>
         </div>
       )}

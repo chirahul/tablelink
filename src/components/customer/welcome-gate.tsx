@@ -40,7 +40,17 @@ export function WelcomeGate({ restaurantName, tableNumber, children }: Props) {
     setMode("done");
   }
 
-  if (mode === null) return null; // initial auth check
+  if (mode === null) {
+    // Branded splash during the initial auth check (avoids a blank flash).
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-3 bg-background">
+        <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center animate-pulse">
+          <User className="w-5 h-5" />
+        </div>
+        <p className="text-sm text-muted-foreground">{restaurantName}</p>
+      </div>
+    );
+  }
   if (mode === "done") return <>{children}</>;
 
   return (

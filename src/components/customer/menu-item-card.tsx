@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Flame } from "lucide-react";
+import { Plus, Flame, UtensilsCrossed } from "lucide-react";
 import { toast } from "sonner";
 import type { MenuItem } from "@/lib/types";
 import { formatCurrency } from "@/lib/format";
@@ -87,21 +87,22 @@ export function MenuItemCard({ item, onClick }: Props) {
           <img
             src={item.image_url}
             alt={item.name}
+            loading="lazy"
             className="w-24 h-24 object-cover rounded-xl shadow-sm"
           />
         ) : (
           <div className="w-24 h-24 bg-muted rounded-xl flex items-center justify-center">
-            <Plus className="w-5 h-5 text-muted-foreground" />
+            <UtensilsCrossed className="w-5 h-5 text-muted-foreground" />
           </div>
         )}
 
-        {/* Quick-add: only for highly-reordered, available items. */}
-        {item.is_popular && !unavailable && (
+        {/* Quick-add for every available item (visible add affordance). */}
+        {!unavailable && (
           <button
             type="button"
             onClick={quickAdd}
             aria-label={`Add ${item.name} to cart`}
-            className="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1 px-3 h-8
+            className="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1 px-3 h-9
                        rounded-full bg-primary text-primary-foreground text-xs font-bold shadow-md
                        border-2 border-card active:scale-95 hover:brightness-105 transition-all"
           >

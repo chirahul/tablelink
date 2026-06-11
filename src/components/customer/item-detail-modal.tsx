@@ -183,18 +183,22 @@ export function ItemDetailModal({ item, onClose }: Props) {
                   type="button"
                   size="icon"
                   variant="outline"
+                  className="size-11"
+                  aria-label="Decrease quantity"
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                   disabled={quantity <= 1}
                 >
                   <Minus className="w-4 h-4" />
                 </Button>
-                <span className="font-semibold w-8 text-center">
+                <span className="font-semibold w-10 text-center tabular-nums">
                   {quantity}
                 </span>
                 <Button
                   type="button"
                   size="icon"
                   variant="outline"
+                  className="size-11"
+                  aria-label="Increase quantity"
                   onClick={() => setQuantity((q) => q + 1)}
                 >
                   <Plus className="w-4 h-4" />
