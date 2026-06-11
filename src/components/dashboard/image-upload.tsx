@@ -10,6 +10,8 @@ import { cn } from "@/lib/utils";
 type Props = {
   value: string | null;
   onChange: (url: string | null) => void;
+  /** Fired when an upload starts (true) and finishes (false) so parents can block submit. */
+  onUploadingChange?: (uploading: boolean) => void;
   label?: string;
   aspectRatio?: "square" | "video" | "wide";
   size?: "sm" | "lg";
@@ -24,6 +26,7 @@ const ASPECT_CLASSES: Record<string, string> = {
 export function ImageUpload({
   value,
   onChange,
+  onUploadingChange,
   label = "Image",
   aspectRatio = "square",
   size = "sm",
@@ -41,6 +44,7 @@ export function ImageUpload({
     }
     const objectUrl = URL.createObjectURL(file);
     setPreview(objectUrl);
+    onUploadingChange?.(true);
 
     startTransition(async () => {
       const formData = new FormData();
@@ -56,6 +60,7 @@ export function ImageUpload({
         setPreview(value);
         toast.error(result.success === false ? result.error : "Upload failed");
       }
+      onUploadingChange?.(false);
     });
   }
 

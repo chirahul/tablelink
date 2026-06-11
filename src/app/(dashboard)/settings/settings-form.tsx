@@ -48,6 +48,7 @@ function initialHours(r: Restaurant): Record<string, DayHours> {
 
 export function SettingsForm({ restaurant }: Props) {
   const [isPending, startTransition] = useTransition();
+  const [imageUploading, setImageUploading] = useState(false);
   const [logoUrl, setLogoUrl] = useState<string | null>(restaurant.logo_url);
   const [coverUrl, setCoverUrl] = useState<string | null>(
     restaurant.cover_image_url
@@ -197,8 +198,8 @@ export function SettingsForm({ restaurant }: Props) {
       >
         {dirty ? "● Unsaved changes" : "All changes saved"}
       </span>
-      <Button onClick={save} disabled={isPending || !dirty || hasErrors}>
-        {isPending ? "Saving..." : "Save Changes"}
+      <Button onClick={save} disabled={isPending || imageUploading || !dirty || hasErrors}>
+        {imageUploading ? "Uploading image..." : isPending ? "Saving..." : "Save Changes"}
       </Button>
     </div>
   );
@@ -280,12 +281,14 @@ export function SettingsForm({ restaurant }: Props) {
             <ImageUpload
               value={logoUrl}
               onChange={setLogoUrl}
+              onUploadingChange={setImageUploading}
               label="Logo"
               aspectRatio="square"
             />
             <ImageUpload
               value={coverUrl}
               onChange={setCoverUrl}
+              onUploadingChange={setImageUploading}
               label="Cover / banner image"
               aspectRatio="wide"
             />
@@ -498,6 +501,7 @@ export function SettingsForm({ restaurant }: Props) {
             <ImageUpload
               value={upiQrUrl}
               onChange={setUpiQrUrl}
+              onUploadingChange={setImageUploading}
               label="Or upload your own UPI QR image"
               aspectRatio="square"
             />

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TheTableLynk — Sales Brochure</title>
+<style>
+  :root{
+    --cream:#FAF6EE; --paper:#F3ECDD; --beige:#E9DEC8; --sand:#DDCEAF;
+    --gold:#B58E3C; --gold-deep:#8F6E2A; --brass:#C9A85B; --brown:#6B5836;
+    --espresso:#3A2E1C; --ink:#251D10; --muted:#8C7A5A; --line:rgba(143,110,42,.28);
+  }
+  *{box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  html,body{margin:0;padding:0;background:#cdbfa6;}
+  body{font-family:"Helvetica Neue",Arial,sans-serif;color:var(--espresso);font-size:11pt;line-height:1.55;}
+  h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:700;color:var(--espresso);margin:0;}
+  p{margin:0 0 10px;}
+  .serif{font-family:Georgia,serif;}
+
+  @page{ size:A4; margin:0; }
+  .page{
+    width:210mm; height:297mm; padding:20mm; margin:0 auto; position:relative;
+    background:var(--cream); overflow:hidden; page-break-after:always;
+    display:flex; flex-direction:column;
+  }
+  .page:last-child{page-break-after:auto;}
+  @media screen{ .page{ margin:16px auto; box-shadow:0 16px 50px rgba(0,0,0,.28);} }
+
+  /* shared bits */
+  .kicker{font-size:9.5pt;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;margin-bottom:14px;}
+  .rule{height:3px;width:54px;background:var(--gold);border-radius:3px;margin:0 0 22px;}
+  .h-display{font-size:34pt;line-height:1.05;letter-spacing:-.01em;}
+  .h-page{font-size:26pt;line-height:1.1;letter-spacing:-.01em;margin-bottom:6px;}
+  .lead{font-size:12.5pt;color:var(--brown);max-width:62ch;}
+  .muted{color:var(--muted);}
+  .gold{color:var(--gold-deep);}
+  .footer{position:absolute;left:20mm;right:20mm;bottom:13mm;display:flex;justify-content:space-between;
+    font-size:8.5pt;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--line);padding-top:8px;}
+  .pageno{font-weight:700;color:var(--gold-deep);}
+
+  /* image placeholder */
+  .ph{background:linear-gradient(135deg,var(--beige),var(--sand));border:1px solid var(--line);
+    border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;color:var(--brown);padding:18px;gap:10px;}
+  .ph .cam{width:38px;height:38px;opacity:.7;}
+  .ph small{font-size:8.5pt;letter-spacing:.04em;max-width:34ch;color:var(--muted);}
+  .ph b{font-size:10pt;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep);}
+  .photo{width:100%;min-width:0;display:block;object-fit:cover;border-radius:16px;border:1px solid var(--line);
+    box-shadow:0 10px 30px rgba(122,96,40,.16);}
+
+  /* cards / lists */
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px 18px;}
+  .ic{width:34px;height:34px;border-radius:10px;background:var(--cream);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;color:var(--gold-deep);flex:0 0 auto;}
+  .ic svg{width:18px;height:18px;}
+  .pill{display:inline-flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--line);
+    border-radius:999px;padding:7px 14px;font-size:10pt;color:var(--brown);}
+  .check{color:var(--gold-deep);font-weight:700;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+
+  /* cover */
+  .cover{background:radial-gradient(120% 80% at 50% 0%,#FBF7F0 0%,#EFE5D2 55%,#E3D4B5 100%);justify-content:flex-start;}
+  .cover .logo{width:320px;height:auto;display:block;margin:3mm auto 0;}
+  .cover .hero{flex:1;margin:8mm 0 0;}
+  .badge{display:inline-block;font-size:8.5pt;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-deep);
+    border:1px solid var(--line);border-radius:999px;padding:6px 14px;background:rgba(255,255,255,.5);}
+
+  /* journey */
+  .journey{display:flex;flex-direction:column;gap:0;align-items:center;margin-top:6px;}
+  .step{width:100%;max-width:380px;background:var(--paper);border:1px solid var(--line);border-radius:14px;
+    padding:14px 18px;display:flex;align-items:center;gap:14px;}
+  .step .n{width:30px;height:30px;border-radius:999px;background:var(--gold);color:#fff;font-weight:700;
+    font-family:Georgia,serif;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .arrow{color:var(--gold);font-size:16pt;line-height:1;margin:6px 0;}
+
+  /* metrics */
+  .metric{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;}
+  .metric .v{font-family:Georgia,serif;font-size:24pt;color:var(--gold-deep);line-height:1;}
+  .metric .l{font-size:9pt;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:6px;}
+
+  /* bars */
+  .bars{display:flex;align-items:flex-end;gap:10px;height:110px;}
+  .bar{flex:1;background:linear-gradient(180deg,var(--brass),var(--gold-deep));border-radius:6px 6px 0 0;}
+  .bartrack{display:flex;justify-content:space-between;font-size:8pt;color:var(--muted);margin-top:6px;}
+
+  .cta{background:linear-gradient(135deg,var(--gold-deep),var(--brown));color:#FBF5E8;border-radius:18px;
+    padding:26px 28px;text-align:center;}
+  .cta .btn{display:inline-block;background:var(--cream);color:var(--espresso);font-weight:700;
+    padding:13px 26px;border-radius:999px;letter-spacing:.02em;font-size:12pt;margin-top:8px;}
+  .contact{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:18px;}
+</style>
+</head>
+<body>
+
+<!-- ============ PAGE 1 · COVER ============ -->
+<section class="page cover">
+  <div style="text-align:center;margin-top:2mm;"><span class="badge">Restaurant Technology · QR Ordering</span></div>
+  <img class="logo" src="./logo-wide.png" alt="TheTableLynk" />
+  <div style="text-align:center;margin-top:6mm;">
+    <h1 class="h-display serif">Tap Into Better Dining</h1>
+    <p class="lead" style="margin:14px auto 0;max-width:54ch;">
+      Transform your restaurant with QR menus, digital ordering, and
+      real-time kitchen management — no app download required.
+    </p>
+  </div>
+  <img class="hero photo" style="flex:1;margin:8mm 0 0;" src="./img/lifestyle.jpg" alt="Warmly lit fine-dining table" />
+  <div style="text-align:center;margin-top:8mm;font-size:9pt;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;">thetablelynk.com</div>
+</section>
+
+<!-- ============ PAGE 2 · THE PROBLEM ============ -->
+<section class="page">
+  <div class="kicker">The Problem</div>
+  <h2 class="h-page serif">Restaurant Operations<br/>Are Changing</h2>
+  <div class="rule" style="margin-top:14px;"></div>
+  <p class="lead">Guest expectations have moved on. The tools most restaurants run on haven’t. The result is friction at every table — and margin left on it.</p>
+
+  <div style="display:flex;flex-direction:column;gap:12px;margin-top:22px;">
+    <div class="card" style="display:flex;gap:16px;align-items:flex-start;">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h12v18l-6-3-6 3z"/></svg></div>
+      <div><b class="serif" style="font-size:13pt;">Printed menus are costly &amp; rigid</b><p class="muted" style="margin:4px 0 0;">Every price change, new dish, or sold-out item means a reprint — and outdated menus on the table.</p></div>
+    </div>
+    <div class="card" style="display:flex;gap:16px;align-items:flex-start;">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></div>
+      <div><b class="serif" style="font-size:13pt;">Staff spend hours taking orders</b><p class="muted" style="margin:4px 0 0;">Manual order-taking ties up your team during the rush — slowing service and turning tables more slowly.</p></div>
+    </div>
+    <div class="card" style="display:flex;gap:16px;align-items:flex-start;">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div>
+      <div><b class="serif" style="font-size:13pt;">Order mistakes cost goodwill</b><p class="muted" style="margin:4px 0 0;">Mis-heard orders mean remakes, refunds, and a guest who won’t come back.</p></div>
+    </div>
+    <div class="card" style="display:flex;gap:16px;align-items:flex-start;">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3v18h18"/><path d="M19 9l-5 5-3-3-4 4"/></svg></div>
+      <div><b class="serif" style="font-size:13pt;">Zero visibility into the business</b><p class="muted" style="margin:4px 0 0;">No data on best-sellers, peak hours, or average spend — so every decision is a guess.</p></div>
+    </div>
+    <div class="card" style="display:flex;gap:16px;align-items:flex-start;">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></div>
+      <div><b class="serif" style="font-size:13pt;">Guests expect digital, now</b><p class="muted" style="margin:4px 0 0;">Diners want to scan, browse photos, customise, and pay from their phone — instantly.</p></div>
+    </div>
+  </div>
+  <div class="footer"><span>TheTableLynk · Tap Into Better Dining</span><span class="pageno">02</span></div>
+</section>
+
+<!-- ============ PAGE 3 · THE SOLUTION ============ -->
+<section class="page">
+  <div class="kicker">The Solution</div>
+  <h2 class="h-page serif">Meet TheTableLynk</h2>
+  <div class="rule" style="margin-top:14px;"></div>
+  <p class="lead">One complete QR-ordering platform. Guests scan, browse, order and pay — straight from the table. Your kitchen and front-of-house stay perfectly in sync.</p>
+
+  <div style="display:flex;gap:24px;margin-top:24px;flex:1;">
+    <div style="flex:1.05;" class="journey">
+      <div class="step"><span class="n">1</span><div><b class="serif">Scan QR Code</b><div class="muted" style="font-size:9.5pt;">At the table — no app, no sign-up.</div></div></div>
+      <div class="arrow">↓</div>
+      <div class="step"><span class="n">2</span><div><b class="serif">Browse the Menu</b><div class="muted" style="font-size:9.5pt;">Photos, descriptions, variants &amp; add-ons.</div></div></div>
+      <div class="arrow">↓</div>
+      <div class="step"><span class="n">3</span><div><b class="serif">Place the Order</b><div class="muted" style="font-size:9.5pt;">Customised, accurate, sent in seconds.</div></div></div>
+      <div class="arrow">↓</div>
+      <div class="step"><span class="n">4</span><div><b class="serif">Kitchen Receives It</b><div class="muted" style="font-size:9.5pt;">Live ticket on the kitchen display.</div></div></div>
+      <div class="arrow">↓</div>
+      <div class="step"><span class="n">5</span><div><b class="serif">Serve the Guest</b><div class="muted" style="font-size:9.5pt;">Faster service, happier tables.</div></div></div>
+    </div>
+    <div style="flex:.95;display:flex;flex-direction:column;gap:14px;">
+      <img class="photo" style="flex:1;min-height:0;" src="./img/solution.jpg" alt="Restaurant terrace at golden hour" />
+      <div class="card" style="background:linear-gradient(135deg,var(--gold-deep),var(--brown));color:#FBF5E8;border:none;">
+        <div class="serif" style="font-size:15pt;">No app. No friction.</div>
+        <p style="margin:6px 0 0;color:#F3E8D2;font-size:10pt;">It runs entirely in the browser. The QR opens the menu instantly — every guest, every device.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>TheTableLynk · Tap Into Better Dining</span><span class="pageno">03</span></div>
+</section>
+
+<!-- ============ PAGE 4 · CUSTOMER EXPERIENCE ============ -->
+<section class="page">
+  <div class="kicker">For Your Guests</div>
+  <h2 class="h-page serif">A Better Dining Experience</h2>
+  <div class="rule" style="margin-top:14px;"></div>
+  <p class="lead">From the first scan to the final tap, every moment feels effortless and on-brand — the kind of polish guests remember.</p>
+
+  <div style="display:flex;gap:22px;margin-top:22px;flex:1;">
+    <img class="photo" style="flex:.9;min-height:0;" src="./img/menu.jpg" alt="Beautifully plated dishes" />
+    <div style="flex:1.1;display:flex;flex-direction:column;gap:11px;">
+      <div class="pill"><span class="check">✓</span> Instant QR access — open in one scan</div>
+      <div class="pill"><span class="check">✓</span> Zero app download or sign-up</div>
+      <div class="pill"><span class="check">✓</span> Beautiful, branded digital menu</div>
+      <div class="pill"><span class="check">✓</span> Rich food photos &amp; descriptions</div>
+      <div class="pill"><span class="check">✓</span> Variants &amp; add-ons (Half / Full, extras)</div>
+      <div class="pill"><span class="check">✓</span> Faster, self-paced ordering</div>
+      <div class="pill"><span class="check">✓</span> Seamless UPI payment at the table</div>
+      <div class="pill"><span class="check">✓</span> Live order tracking to the table</div>
+    </div>
+  </div>
+  <div class="footer"><span>TheTableLynk · Tap Into Better Dining</span><span class="pageno">04</span></div>
+</section>
+
+<!-- ============ PAGE 5 · RESTAURANT FEATURES ============ -->
+<section class="page">
+  <div class="kicker">The Platform</div>
+  <h2 class="h-page serif">Built for Modern Restaurants</h2>
+  <div class="rule" style="margin-top:14px;"></div>
+  <p class="lead">Everything you need to run service end-to-end — in one elegant system.</p>
+
+  <div class="grid3" style="margin-top:20px;flex:1;align-content:start;">
+    <div class="card"><div class="ic" style="margin-bottom:10px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16M4 12h16M4 18h10"/></svg></div><b class="serif" style="font-size:12.5pt;">Digital Menu Management</b><p class="muted" style="margin:5px 0 0;font-size:9.5pt;">Update items, prices &amp; photos instantly.</p></div>
+    <div class="card"><div class="ic" style="margin-bottom:10px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM21 21v.01M21 17v.01M17 21v.01"/></svg></div><b class="serif" style="font-size:12.5pt;">QR Table Ordering</b><p class="muted" style="margin:5px 0 0;font-size:9.5pt;">A unique QR per table, order to the seat.</p></div>
+    <div class="card"><div class="ic" style="margin-bottom:10px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h16v10H4z"/><path d="M8 21h8M12 17v4"/></svg></div><b class="serif" style="font-size:12.5pt;">Kitchen Display System</b><p class="muted" style="margin:5px 0 0;font-size:9.5pt;">Live tickets with time escalation.</p></div>
+    <div class="card"><div class="ic" style="margin-bottom:10px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 14h5"/></svg></div><b class="serif" style="font-size:12.5pt;">Order Management</b><p class="muted" style="margin:5px 0 0;font-size:9.5pt;">Every order, status &amp; payment in one view.</p></div>
+    <div class="card"><div class="ic" style="margin-bottom:10px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 19V5M4 19h16M9 15l3-4 3 2 4-6"/></svg></div><b class="serif" style="font-size:12.5pt;">Analytics &amp; Insights</b><p class="muted" style="margin:5px 0 0;font-size:9.5pt;">Revenue, best-sellers &amp; peak hours.</p></div>
+    <div class="card"><div class="ic" style="margin-bottom:10px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3v18"/></svg></div><b class="serif" style="font-size:12.5pt;">Table &amp; QR Management</b><p class="muted" style="margin:5px 0 0;font-size:9.5pt;">Add tables, print &amp; download QR sheets.</p></div>
+    <div class="card" style="grid-column:span 3;display:flex;align-items:center;gap:16px;"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/></svg></div><div><b class="serif" style="font-size:12.5pt;">Payment Integration</b><span class="muted" style="font-size:9.5pt;"> — UPI (GPay, PhonePe, Paytm), counter &amp; more, settled at the table.</span></div></div>
+  </div>
+  <div class="footer"><span>TheTableLynk · Tap Into Better Dining</span><span class="pageno">05</span></div>
+</section>
+
+<!-- ============ PAGE 6 · DASHBOARD ============ -->
+<section class="page">
+  <div class="kicker">Command Centre</div>
+  <h2 class="h-page serif">Control Everything<br/>From One Dashboard</h2>
+  <div class="rule" style="margin-top:14px;"></div>
+  <p class="lead">Run the whole floor from a single, beautiful screen — on a laptop, tablet, or the kitchen TV.</p>
+
+  <img class="photo" style="height:78mm;margin-top:18px;" src="./img/dashboard.jpg" alt="Live analytics dashboard" />
+
+  <div class="grid3" style="margin-top:16px;">
+    <div class="pill"><span class="check">✓</span> Real-time orders</div>
+    <div class="pill"><span class="check">✓</span> Revenue tracking</div>
+    <div class="pill"><span class="check">✓</span> Instant menu updates</div>
+    <div class="pill"><span class="check">✓</span> QR code management</div>
+    <div class="pill"><span class="check">✓</span> Customer activity</div>
+    <div class="pill"><span class="check">✓</span> Performance analytics</div>
+  </div>
+  <div class="footer"><span>TheTableLynk · Tap Into Better Dining</span><span class="pageno">06</span></div>
+</section>
+
+<!-- ============ PAGE 7 · ANALYTICS ============ -->
+<section class="page">
+  <div class="kicker">Analytics &amp; Insights</div>
+  <h2 class="h-page serif">Make Better<br/>Business Decisions</h2>
+  <div class="rule" style="margin-top:14px;"></div>
+  <p class="lead">Every scan and order becomes insight. Know what sells, when you’re busy, and where revenue is hiding — then act on it.</p>
+
+  <div class="grid3" style="margin-top:20px;">
+    <div class="metric"><div class="v">142</div><div class="l">Orders Today</div></div>
+    <div class="metric"><div class="v">₹24.5k</div><div class="l">Revenue</div></div>
+    <div class="metric"><div class="v">₹172</div><div class="l">Avg Order Value</div></div>
+  </div>
+
+  <div style="display:flex;gap:14px;margin-top:14px;">
+    <div class="card" style="flex:1;">
+      <div class="kicker" style="margin-bottom:8px;">Peak Hours</div>
+      <div class="bars">
+        <div class="bar" style="height:40%"></div><div class="bar" style="height:62%"></div>
+        <div class="bar" style="height:48%"></div><div class="bar" style="height:80%"></div>
+        <div class="bar" style="height:95%"></div><div class="bar" style="height:70%"></div>
+      </div>
+      <div class="bartrack"><span>12p</span><span>2p</span><span>5p</span><span>7p</span><span>9p</span><span>11p</span></div>
+    </div>
+    <div class="card" style="flex:1;">
+      <div class="kicker" style="margin-bottom:8px;">Popular Items</div>
+      <div style="display:flex;flex-direction:column;gap:9px;font-size:10pt;">
+        <div style="display:flex;justify-content:space-between;"><span>1 · Paneer Tikka</span><b class="gold">86</b></div>
+        <div style="display:flex;justify-content:space-between;"><span>2 · Butter Chicken</span><b class="gold">71</b></div>
+        <div style="display:flex;justify-content:space-between;"><span>3 · Garlic Naan</span><b class="gold">64</b></div>
+        <div style="display:flex;justify-content:space-between;"><span>4 · Cold Coffee</span><b class="gold">52</b></div>
+        <div style="display:flex;justify-content:space-between;"><span>5 · Gulab Jamun</span><b class="gold">39</b></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px;display:flex;gap:16px;align-items:center;background:linear-gradient(135deg,var(--gold-deep),var(--brown));color:#FBF5E8;border:none;">
+    <div class="serif" style="font-size:15pt;flex:0 0 auto;">+18%</div>
+    <p style="margin:0;color:#F3E8D2;font-size:10pt;">Restaurants use these insights to re-merchandise best-sellers, staff for peak hours, and nudge average order value upward — turning data into measurable revenue.</p>
+  </div>
+  <div class="footer"><span>TheTableLynk · Tap Into Better Dining</span><span class="pageno">07</span></div>
+</section>
+
+<!-- ============ PAGE 8 · WHY CHOOSE ============ -->
+<section class="page">
+  <div class="kicker">The Difference</div>
+  <h2 class="h-page serif">Why Restaurants Choose<br/>TheTableLynk</h2>
+  <div class="rule" style="margin-top:14px;"></div>
+  <p class="lead">Premium experience, real operational gains, and a price that pays for itself.</p>
+
+  <div class="grid2" style="margin-top:22px;">
+    <div class="pill" style="font-size:11pt;padding:12px 16px;"><span class="check">✓</span> Increase operational efficiency</div>
+    <div class="pill" style="font-size:11pt;padding:12px 16px;"><span class="check">✓</span> Reduce order errors</div>
+    <div class="pill" style="font-size:11pt;padding:12px 16px;"><span class="check">✓</span> Improve customer experience</div>
+    <div class="pill" style="font-size:11pt;padding:12px 16px;"><span class="check">✓</span> Increase average order value</div>
+    <div class="pill" style="font-size:11pt;padding:12px 16px;"><span class="check">✓</span> Faster table turnover</div>
+    <div class="pill" style="font-size:11pt;padding:12px 16px;"><span class="check">✓</span> Real-time visibility</div>
+    <div class="pill" style="font-size:11pt;padding:12px 16px;"><span class="check">✓</span> Easy setup &amp; onboarding</div>
+    <div class="pill" style="font-size:11pt;padding:12px 16px;"><span class="check">✓</span> Affordable, transparent pricing</div>
+  </div>
+
+  <img class="photo" style="flex:1;min-height:0;margin-top:18px;" src="./img/hero.jpg" alt="Freshly served wood-fired dish" />
+  <div class="footer"><span>TheTableLynk · Tap Into Better Dining</span><span class="pageno">08</span></div>
+</section>
+
+<!-- ============ PAGE 9 · ROI ============ -->
+<section class="page">
+  <div class="kicker">Business Impact</div>
+  <h2 class="h-page serif">Small Change. Big Impact.</h2>
+  <div class="rule" style="margin-top:14px;"></div>
+  <p class="lead">The economics are simple: less waste, faster service, fewer mistakes, more covers.</p>
+
+  <div class="grid3" style="margin-top:20px;">
+    <div class="metric"><div class="v">100%</div><div class="l">Printing costs removed</div></div>
+    <div class="metric"><div class="v">30%</div><div class="l">Faster order-to-kitchen</div></div>
+    <div class="metric"><div class="v">99%</div><div class="l">Order accuracy</div></div>
+  </div>
+
+  <div style="display:flex;gap:14px;margin-top:14px;">
+    <div class="card" style="flex:1;">
+      <div class="kicker" style="margin-bottom:8px;">Avg. Order Value — Before / After</div>
+      <div class="bars" style="height:120px;">
+        <div class="bar" style="height:60%;background:var(--sand)"></div>
+        <div class="bar" style="height:78%"></div>
+      </div>
+      <div class="bartrack"><span>Before</span><span>With TheTableLynk</span></div>
+    </div>
+    <div class="card" style="flex:1;">
+      <div class="kicker" style="margin-bottom:8px;">Tables Turned / Night</div>
+      <div class="bars" style="height:120px;">
+        <div class="bar" style="height:55%;background:var(--sand)"></div>
+        <div class="bar" style="height:85%"></div>
+      </div>
+      <div class="bartrack"><span>Before</span><span>With TheTableLynk</span></div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:9px;margin-top:16px;">
+    <div class="pill"><span class="check">✓</span> Reduced printing &amp; reprint costs</div>
+    <div class="pill"><span class="check">✓</span> Faster service &amp; quicker turnover</div>
+    <div class="pill"><span class="check">✓</span> Higher customer satisfaction &amp; repeat visits</div>
+    <div class="pill"><span class="check">✓</span> Fewer mistakes, fewer refunds</div>
+    <div class="pill"><span class="check">✓</span> Real-time operational visibility</div>
+  </div>
+  <p class="muted" style="font-size:8pt;margin-top:10px;">*Illustrative figures for layout — replace with your own pilot results.</p>
+  <div class="footer"><span>TheTableLynk · Tap Into Better Dining</span><span class="pageno">09</span></div>
+</section>
+
+<!-- ============ PAGE 10 · CTA ============ -->
+<section class="page" style="background:radial-gradient(120% 80% at 50% 100%,#FBF7F0 0%,#EFE5D2 55%,#E3D4B5 100%);justify-content:center;text-align:center;">
+  <img src="./logo-wide.png" alt="TheTableLynk" style="width:240px;display:block;margin:0 auto 6mm;"/>
+  <h2 class="h-display serif" style="font-size:30pt;">Ready to Modernize<br/>Your Restaurant?</h2>
+  <p class="lead" style="margin:14px auto 0;max-width:48ch;">Set up in minutes, free to start. See TheTableLynk live on your own menu.</p>
+
+  <div class="cta" style="max-width:420px;margin:26px auto 0;">
+    <div class="serif" style="font-size:18pt;">Book a Demo Today</div>
+    <a class="btn">Get Started →</a>
+  </div>
+
+  <div class="contact">
+    <span class="pill">🌐 thetablelynk.com</span>
+    <span class="pill">✉ hello@thetablelynk.com</span>
+    <span class="pill">📞 78795 99093</span>
+  </div>
+
+  <p class="serif" style="font-size:15pt;color:var(--gold-deep);margin-top:30px;font-style:italic;">“The future of dining starts at the table.”</p>
+</section>
+
+</body>
+</html>

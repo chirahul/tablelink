@@ -52,6 +52,7 @@ export function MenuItemForm({
   const [isVeg, setIsVeg] = useState(item?.is_veg ?? true);
   const [isAvailable, setIsAvailable] = useState(item?.is_available ?? true);
   const [imageUrl, setImageUrl] = useState<string | null>(item?.image_url ?? null);
+  const [imageUploading, setImageUploading] = useState(false);
   const [variants, setVariants] = useState<MenuVariant[]>(item?.variants ?? []);
   const [addons, setAddons] = useState<MenuAddon[]>(item?.addons ?? []);
   const [addAnother, setAddAnother] = useState(false);
@@ -110,6 +111,10 @@ export function MenuItemForm({
       toast.error("Please fix the highlighted fields");
       return;
     }
+    if (imageUploading) {
+      toast.error("Image is still uploading — give it a second.");
+      return;
+    }
 
     const fd = new FormData();
     fd.set("name", name.trim());
@@ -164,6 +169,7 @@ export function MenuItemForm({
         <ImageUpload
           value={imageUrl}
           onChange={setImageUrl}
+          onUploadingChange={setImageUploading}
           label="Item photo"
           aspectRatio="square"
           size="lg"
@@ -475,12 +481,14 @@ export function MenuItemForm({
           <Button type="button" variant="outline" onClick={() => onDone(false)}>
             Cancel
           </Button>
-          <Button type="submit" disabled={isPending}>
-            {isPending
-              ? "Saving..."
-              : isEditing
-                ? "Save changes"
-                : "Create Menu Item"}
+          <Button type="submit" disabled={isPending || imageUploading}>
+            {imageUploading
+              ? "Uploading image..."
+              : isPending
+                ? "Saving..."
+                : isEditing
+                  ? "Save changes"
+                  : "Create Menu Item"}
           </Button>
         </div>
       </div>

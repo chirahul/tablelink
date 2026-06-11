@@ -67,6 +67,7 @@ export default async function DashboardPage() {
           .from("orders")
           .select("total")
           .eq("restaurant_id", rid)
+          .neq("status", "cancelled")
           .gte("created_at", todayStart.toISOString())
       : Promise.resolve({ data: [] }),
     rid

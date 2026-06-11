@@ -3,7 +3,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { APP_NAME } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/server";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo-wide.png";
 
 export default async function AuthLayout({
   children,
@@ -33,7 +33,7 @@ export default async function AuthLayout({
           src={logo}
           alt={APP_NAME}
           priority
-          className="w-40 h-auto rounded-2xl shadow-sm"
+          className="w-56 h-auto"
         />
       </Link>
       <div className="w-full max-w-sm">{children}</div>

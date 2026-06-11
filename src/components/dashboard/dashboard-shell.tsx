@@ -10,7 +10,7 @@ import { APP_NAME } from "@/lib/constants";
 import { logout } from "@/app/(auth)/actions";
 import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { SidebarNav } from "@/components/dashboard/sidebar-nav";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo-wide.png";
 
 type Props = {
   userEmail: string | null;
