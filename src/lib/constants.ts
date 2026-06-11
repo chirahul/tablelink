@@ -1,5 +1,5 @@
 export const APP_NAME = "TheTableLynk";
-export const APP_TAGLINE = "Scan. Order. Eat.";
+export const APP_TAGLINE = "Tap Into Better Dining.";
 export const APP_DESCRIPTION =
   "QR code-based table ordering for restaurants. No app download needed.";
 
