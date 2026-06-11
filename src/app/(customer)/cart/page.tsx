@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { VegIndicator } from "@/components/customer/veg-indicator";
 import { UpiQrDisplay } from "@/components/customer/upi-qr-display";
+import { isRestaurantOpen } from "@/lib/opening-hours";
 import { useCartStore } from "@/stores/cart-store";
 import { formatCurrency } from "@/lib/format";
 import { createClient } from "@/lib/supabase/client";
@@ -61,6 +62,9 @@ export default function CartPage() {
 
   const phoneValid =
     !customerPhone || /^[+]?[\d\s-]{7,15}$/.test(customerPhone.trim());
+  const isClosed = restaurant
+    ? !isRestaurantOpen(restaurant.opening_hours).isOpen
+    : false;
   const subtotal = getSubtotal();
   const taxRate = restaurant?.settings?.tax_rate ?? 0;
   const tax = subtotal * (taxRate / 100);
@@ -337,6 +341,12 @@ export default function CartPage() {
         {!tableId && (
           <p className="text-xs text-center text-muted-foreground">
             Scan the QR code on your table to place an order.
+          </p>
+        )}
+        {isClosed && tableId && (
+          <p className="text-xs text-center text-warning">
+            This restaurant is currently closed — your order may not be
+            prepared until it reopens.
           </p>
         )}
         <Button

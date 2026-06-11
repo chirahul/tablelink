@@ -4,6 +4,7 @@ import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/shared/status-badge";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { Separator } from "@/components/ui/separator";
 import {
   Dialog,
@@ -58,6 +59,7 @@ const NEXT_STATUS: Partial<Record<OrderStatus, { label: string; next: OrderStatu
 export function OrderDetailDialog({ orderId, onClose }: Props) {
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState(false);
+  const [confirmCancel, setConfirmCancel] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
@@ -230,6 +232,17 @@ export function OrderDetailDialog({ orderId, onClose }: Props) {
             </div>
 
             <DialogFooter className="gap-2 flex-wrap">
+              {order.status !== "served" && order.status !== "cancelled" && (
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => setConfirmCancel(true)}
+                  disabled={isPending}
+                  className="mr-auto"
+                >
+                  Cancel order
+                </Button>
+              )}
               <Button
                 size="sm"
                 variant={
@@ -252,6 +265,19 @@ export function OrderDetailDialog({ orderId, onClose }: Props) {
                 </Button>
               )}
             </DialogFooter>
+
+            <ConfirmDialog
+              open={confirmCancel}
+              onOpenChange={setConfirmCancel}
+              title={`Cancel ${order.order_number}?`}
+              description="This marks the order cancelled. The customer will see it as cancelled on their tracker. This can't be undone."
+              confirmLabel="Cancel order"
+              onConfirm={() => {
+                updateStatus("cancelled");
+                setConfirmCancel(false);
+              }}
+              isPending={isPending}
+            />
           </>
         )}
       </DialogContent>

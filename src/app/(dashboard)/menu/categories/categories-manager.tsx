@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { FolderOpen, Pencil, Trash2, Plus } from "lucide-react";
+import { FolderOpen, Pencil, Trash2, Plus, GripVertical } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,10 +16,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
+import { ActionsMenu } from "@/components/shared/actions-menu";
+import { Reorderable } from "@/components/shared/reorderable";
 import {
   createCategory,
   updateCategory,
   deleteCategory,
+  reorderCategories,
 } from "../../admin-actions";
 import type { Category } from "@/lib/types";
 
@@ -40,6 +43,14 @@ export function CategoriesManager({ categories }: Props) {
       if (r.success) toast.success("Category deleted");
       else toast.error(r.error);
       setDeleting(null);
+    });
+  }
+
+  function onReorder(ids: string[]) {
+    startTransition(async () => {
+      const r = await reorderCategories(ids);
+      if (r.success) toast.success("Order updated");
+      else toast.error(r.error);
     });
   }
 
@@ -71,52 +82,51 @@ export function CategoriesManager({ categories }: Props) {
           </p>
         </div>
       ) : (
-        <div className="space-y-2">
-          {categories.map((c) => (
-            <div
-              key={c.id}
-              className="p-4 rounded-lg border bg-card flex items-center justify-between gap-4"
-            >
-              <div className="min-w-0">
+        <Reorderable
+          items={categories}
+          getId={(c) => c.id}
+          onReorder={onReorder}
+          className="space-y-2"
+        >
+          {(c, controls) => (
+            <div className="p-4 rounded-lg border bg-card flex items-center justify-between gap-3">
+              <button
+                onPointerDown={(e) => controls.start(e)}
+                aria-label="Drag to reorder"
+                className="cursor-grab active:cursor-grabbing text-muted-foreground touch-none shrink-0"
+              >
+                <GripVertical className="w-4 h-4" />
+              </button>
+              <div className="min-w-0 flex-1">
                 <div className="font-semibold flex items-center gap-2">
-                  <span>{c.name}</span>
+                  <span className="truncate">{c.name}</span>
                   {!c.is_active && (
-                    <span className="text-xs px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                    <span className="text-xs px-1.5 py-0.5 rounded bg-muted text-muted-foreground shrink-0">
                       hidden
                     </span>
                   )}
                 </div>
                 {c.description && (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground truncate">
                     {c.description}
                   </p>
                 )}
-                <p className="text-xs text-muted-foreground mt-1">
-                  Order: {c.sort_order}
-                </p>
               </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  aria-label={`Edit ${c.name}`}
-                  onClick={() => setEditing(c)}
-                >
-                  <Pencil className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  aria-label={`Delete ${c.name}`}
-                  disabled={isPending}
-                  onClick={() => setDeleting(c)}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
+              <ActionsMenu
+                items={[
+                  { label: "Edit", icon: Pencil, onSelect: () => setEditing(c) },
+                  {
+                    label: "Delete",
+                    icon: Trash2,
+                    onSelect: () => setDeleting(c),
+                    destructive: true,
+                    separatorBefore: true,
+                  },
+                ]}
+              />
             </div>
-          ))}
-        </div>
+          )}
+        </Reorderable>
       )}
 
       <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>

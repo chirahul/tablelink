@@ -47,6 +47,7 @@ export function MenuItemForm({
     item?.variants ?? []
   );
   const [addons, setAddons] = useState<MenuAddon[]>(item?.addons ?? []);
+  const [isVeg, setIsVeg] = useState(item?.is_veg ?? true);
   const [categoryId, setCategoryId] = useState<string>(
     item?.category_id ?? defaultCategoryId ?? categories[0]?.id ?? ""
   );
@@ -186,13 +187,35 @@ export function MenuItemForm({
           </div>
 
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2">
-              <Switch
-                id="is_veg"
-                name="is_veg"
-                defaultChecked={item?.is_veg ?? true}
-              />
-              <Label htmlFor="is_veg">Vegetarian</Label>
+            <div className="space-y-1.5">
+              <Label>Type</Label>
+              <input type="hidden" name="is_veg" value={isVeg ? "true" : "false"} />
+              <div className="inline-flex rounded-lg border p-0.5">
+                <button
+                  type="button"
+                  onClick={() => setIsVeg(true)}
+                  aria-pressed={isVeg}
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                    isVeg
+                      ? "bg-success-container text-success"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  Veg
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsVeg(false)}
+                  aria-pressed={!isVeg}
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                    !isVeg
+                      ? "bg-destructive-container text-destructive"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  Non-Veg
+                </button>
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <Switch
