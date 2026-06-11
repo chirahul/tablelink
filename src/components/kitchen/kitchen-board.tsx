@@ -6,6 +6,7 @@ import { Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { useAudioAlert } from "@/hooks/use-audio-alert";
+import { formatRelativeTime } from "@/lib/format";
 import type { OrderStatus } from "@/lib/types";
 import { OrderTicket, type KitchenOrder } from "./order-ticket";
 
@@ -110,10 +111,32 @@ export function KitchenBoard({ restaurantId, initialOrders }: Props) {
           new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
       );
 
+  const activeOrders = orders.filter((o) =>
+    ["pending", "confirmed", "preparing", "ready"].includes(o.status)
+  );
+  const oldest = activeOrders.reduce<KitchenOrder | null>(
+    (m, o) =>
+      !m || new Date(o.created_at) < new Date(m.created_at) ? o : m,
+    null
+  );
+
   return (
     <div className="h-full flex flex-col">
-      <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
-        <h1 className="text-2xl font-bold">Kitchen Display</h1>
+      <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
+        <div className="flex items-baseline gap-3">
+          <h1 className="text-2xl font-bold tracking-tight">Kitchen Display</h1>
+          <span className="text-sm text-muted-foreground">
+            {activeOrders.length} active
+            {oldest && (
+              <>
+                {" · oldest "}
+                <span className="font-medium text-foreground">
+                  {formatRelativeTime(oldest.created_at)}
+                </span>
+              </>
+            )}
+          </span>
+        </div>
         <Button
           variant={enabled ? "default" : "outline"}
           size="sm"
@@ -143,7 +166,7 @@ export function KitchenBoard({ restaurantId, initialOrders }: Props) {
             >
               <div className="px-4 py-3 font-semibold text-sm flex items-center justify-between">
                 <span>{col.title}</span>
-                <span className="w-6 h-6 rounded-full bg-foreground/10 flex items-center justify-center text-xs">{list.length}</span>
+                <span className="min-w-6 h-6 px-2 rounded-full bg-background/70 border border-border flex items-center justify-center text-xs font-semibold">{list.length}</span>
               </div>
               <div className="flex-1 overflow-y-auto p-2 pt-0 space-y-2">
                 {list.length === 0 && (

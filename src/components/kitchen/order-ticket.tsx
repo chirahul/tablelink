@@ -147,22 +147,27 @@ export function OrderTicket({ order, onLocalUpdate }: Props) {
         order.status === "pending" ? "ring-2 ring-primary/50" : ""
       }`}
     >
-      {/* Header */}
-      <div className="flex items-start justify-between mb-2">
-        <div>
-          <div className="font-bold text-base leading-tight">
-            {order.order_number}
-          </div>
-          <div className="text-xs text-muted-foreground">
+      {/* Header — table is what the kitchen scans for first */}
+      <div className="flex items-start justify-between mb-2.5">
+        <div className="min-w-0">
+          <div className="font-bold text-lg leading-none">
             Table {order.table.table_number}
+          </div>
+          <div className="text-[11px] text-muted-foreground mt-0.5">
+            {order.order_number}
           </div>
         </div>
         <div className="flex flex-col items-end gap-1">
-          <div className={`flex items-center gap-1 text-xs ${elapsedColor}`}>
-            <Clock className="w-3 h-3" />
+          <div className={`flex items-center gap-1 text-sm font-semibold ${elapsedColor}`}>
+            <Clock className="w-3.5 h-3.5" />
             {formatRelativeTime(order.created_at)}
           </div>
-          <button onClick={togglePayment} disabled={isPending} className="cursor-pointer">
+          <button
+            onClick={togglePayment}
+            disabled={isPending}
+            aria-label="Toggle payment status"
+            className="cursor-pointer"
+          >
             {paymentBadge(order.payment_method, order.payment_status)}
           </button>
         </div>
@@ -175,11 +180,13 @@ export function OrderTicket({ order, onLocalUpdate }: Props) {
             const addons =
               (oi.addons as { name: string; price: number }[] | null) ?? [];
             return (
-              <div key={oi.id} className="text-sm">
+              <div key={oi.id} className="text-[15px] leading-snug">
                 <div className="flex items-center gap-1.5">
                   <VegIndicator isVeg={oi.menu_item.is_veg} />
-                  <span className="font-medium">{oi.quantity}×</span>
-                  <span className="truncate">{oi.menu_item.name}</span>
+                  <span className="font-bold text-base text-primary mr-0.5">
+                    {oi.quantity}×
+                  </span>
+                  <span className="truncate font-medium">{oi.menu_item.name}</span>
                   {oi.variant && (
                     <span className="text-xs text-muted-foreground">
                       ({oi.variant})
@@ -238,7 +245,7 @@ export function OrderTicket({ order, onLocalUpdate }: Props) {
           {actions.map((a) => (
             <Button
               key={a.next}
-              size="sm"
+              size="lg"
               variant={a.variant ?? "default"}
               disabled={isPending}
               onClick={() => updateStatus(a.next)}
