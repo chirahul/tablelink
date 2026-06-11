@@ -25,6 +25,15 @@ async function requireRestaurantId(): Promise<string | null> {
   return restaurant?.id ?? null;
 }
 
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 // ============================================================
 // IMAGE UPLOAD
 // ============================================================
@@ -532,6 +541,7 @@ export async function updateRestaurantSettings(
   const google_maps_url =
     String(formData.get("google_maps_url") ?? "").trim() || null;
   const is_active = formData.get("is_active") !== "false"; // default open
+  const slug = slugify(String(formData.get("slug") ?? ""));
 
   const social_links = {
     instagram: String(formData.get("social_instagram") ?? "").trim() || undefined,
@@ -551,6 +561,7 @@ export async function updateRestaurantSettings(
   }
 
   if (!name) return { success: false, error: "Restaurant name is required" };
+  if (!slug) return { success: false, error: "Menu link can't be empty" };
 
   const settings: RestaurantSettings = {
     currency,
@@ -559,10 +570,26 @@ export async function updateRestaurantSettings(
   };
 
   const supabase = await createClient();
+
+  // Menu link (slug) must be unique across restaurants.
+  const { data: clash } = await supabase
+    .from("restaurants")
+    .select("id")
+    .eq("slug", slug)
+    .neq("id", restaurantId)
+    .maybeSingle();
+  if (clash) {
+    return {
+      success: false,
+      error: "That menu link is already taken — try another.",
+    };
+  }
+
   const { error } = await supabase
     .from("restaurants")
     .update({
       name,
+      slug,
       description,
       address,
       phone,

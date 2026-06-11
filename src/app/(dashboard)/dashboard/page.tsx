@@ -14,7 +14,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatCard } from "@/components/shared/stat-card";
 import { CopyLinkButton } from "@/components/dashboard/copy-link-button";
-import { SeedButton } from "./seed-button";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { formatCurrency, formatRelativeTime } from "@/lib/format";
 import {
@@ -161,7 +160,6 @@ export default async function DashboardPage() {
           )}
         </div>
         <div className="flex gap-2 flex-wrap">
-          <SeedButton />
           {restaurant && (
             <>
               <Link href={`/menu/${restaurant.slug}`} target="_blank">

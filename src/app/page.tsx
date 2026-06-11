@@ -212,7 +212,7 @@ export default function HomePage() {
               </Reveal>
               <StaggerContainer className="grid md:grid-cols-3 gap-8" staggerDelay={0.15}>
                 {[
-                  { n: 1, title: "Set up your menu", desc: "Sign up, create categories, add items with photos, variants, and prices. Or load sample data in one click." },
+                  { n: 1, title: "Set up your menu", desc: "Sign up, create categories, and add items with photos, variants, and prices." },
                   { n: 2, title: "Print QR codes", desc: "Create tables, generate a unique QR for each. Download PNG or print directly with your branding." },
                   { n: 3, title: "Open the kitchen", desc: "Open /kitchen on any screen. Orders arrive in real-time with sound alerts. Move them with one tap." },
                 ].map((s) => (
@@ -372,7 +372,7 @@ export default function HomePage() {
             { q: "How do payments work?", a: "Two options: customers can scan your UPI QR code at checkout (with the amount pre-filled), or they can pay at the counter. No payment gateway integration needed." },
             { q: "Can I customize my menu?", a: "Yes — add categories, items with photos, variants (Half/Full), add-ons (Extra cheese), dietary tags, veg/non-veg indicators. All from the admin dashboard." },
             { q: "Is there a contract or lock-in?", a: "No. The Starter plan is free forever. Pro is month-to-month — cancel anytime." },
-            { q: "How long does setup take?", a: "Under 10 minutes. Sign up, add your menu (or load our sample data), create tables, print QR codes, done." },
+            { q: "How long does setup take?", a: "Under 10 minutes. Sign up, add your menu, create tables, print QR codes, done." },
             { q: "Can I use this for multiple restaurants?", a: "Each restaurant gets its own account with a unique menu URL and QR codes. As a platform owner, you can manage all of them from the super admin panel." },
           ].map((f) => (
             <StaggerItem key={f.q}>

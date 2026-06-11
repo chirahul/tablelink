@@ -58,6 +58,7 @@ export function SettingsForm({ restaurant }: Props) {
 
   const [form, setForm] = useState({
     name: restaurant.name,
+    slug: restaurant.slug,
     description: restaurant.description ?? "",
     address: restaurant.address ?? "",
     phone: restaurant.phone ?? "",
@@ -82,6 +83,7 @@ export function SettingsForm({ restaurant }: Props) {
       JSON.stringify({
         form: {
           name: restaurant.name,
+          slug: restaurant.slug,
           description: restaurant.description ?? "",
           address: restaurant.address ?? "",
           phone: restaurant.phone ?? "",
@@ -142,10 +144,12 @@ export function SettingsForm({ restaurant }: Props) {
     return () => window.removeEventListener("beforeunload", handler);
   }, [dirty]);
 
-  const menuLink =
+  const origin =
     typeof window !== "undefined"
-      ? `${window.location.origin}/menu/${restaurant.slug}`
-      : `https://thetablelynk.com/menu/${restaurant.slug}`;
+      ? window.location.origin
+      : "https://thetablelynk.com";
+  const menuLink = `${origin}/menu/${form.slug}`;
+  const slugChanged = form.slug !== restaurant.slug;
 
   function save() {
     if (hasErrors) {
@@ -408,12 +412,33 @@ export function SettingsForm({ restaurant }: Props) {
           </div>
 
           <div className="space-y-2 pt-2 border-t">
-            <p className="font-medium">Share your menu</p>
+            <p className="font-medium">Menu link</p>
             <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground font-mono shrink-0">
+                {origin.replace(/^https?:\/\//, "")}/menu/
+              </span>
+              <Input
+                value={form.slug}
+                onChange={(e) => set("slug", e.target.value)}
+                className="font-mono text-sm"
+                placeholder="your-restaurant"
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Your menu link doesn&apos;t change automatically when you rename
+              the restaurant — so already-printed QR codes keep working. Edit it
+              here if you want, but{" "}
+              <span className="text-warning font-medium">
+                changing it breaks QR codes you&apos;ve already printed
+              </span>{" "}
+              — you&apos;ll need to reprint them.
+            </p>
+            <div className="flex items-center gap-2 pt-1">
               <Input readOnly value={menuLink} className="font-mono text-xs" />
               <Button
                 type="button"
                 variant="outline"
+                disabled={slugChanged}
                 onClick={() => {
                   navigator.clipboard.writeText(menuLink);
                   toast.success("Menu link copied");
@@ -422,11 +447,16 @@ export function SettingsForm({ restaurant }: Props) {
                 <Copy className="w-4 h-4" />
               </Button>
               <a href={menuLink} target="_blank" rel="noreferrer">
-                <Button type="button" variant="outline">
+                <Button type="button" variant="outline" disabled={slugChanged}>
                   <ExternalLink className="w-4 h-4" />
                 </Button>
               </a>
             </div>
+            {slugChanged && (
+              <p className="text-xs text-muted-foreground">
+                Save changes first, then this link will be live.
+              </p>
+            )}
           </div>
         </TabsContent>
 
