@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { ActionsMenu } from "@/components/shared/actions-menu";
+import { EmptyState } from "@/components/shared/empty-state";
 import { Reorderable } from "@/components/shared/reorderable";
 import {
   createCategory,
@@ -72,15 +73,16 @@ export function CategoriesManager({ categories }: Props) {
       </div>
 
       {categories.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4 text-muted-foreground">
-            <FolderOpen className="w-7 h-7" />
-          </div>
-          <h3 className="text-lg font-semibold mb-1">No categories yet</h3>
-          <p className="text-sm text-muted-foreground max-w-sm mb-6">
-            Categories group your menu — like Starters, Main Course, Beverages. Create your first one to start adding items.
-          </p>
-        </div>
+        <EmptyState
+          card
+          icon={<FolderOpen className="w-7 h-7" />}
+          title="No categories yet"
+          description="Categories group your menu — like Starters, Main Course, Beverages. Create your first one to start adding items."
+          action={{
+            label: "Create your first category",
+            onClick: () => setCreating(true),
+          }}
+        />
       ) : (
         <Reorderable
           items={categories}
@@ -88,10 +90,10 @@ export function CategoriesManager({ categories }: Props) {
           onReorder={onReorder}
           className="space-y-2"
         >
-          {(c, controls) => (
+          {(c, handle) => (
             <div className="p-4 rounded-lg border bg-card flex items-center justify-between gap-3">
               <button
-                onPointerDown={(e) => controls.start(e)}
+                {...handle}
                 aria-label="Drag to reorder"
                 className="cursor-grab active:cursor-grabbing text-muted-foreground touch-none shrink-0"
               >

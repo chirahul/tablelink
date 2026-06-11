@@ -1,47 +1,80 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Reorder, useDragControls, type DragControls } from "framer-motion";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  rectSortingStrategy,
+  verticalListSortingStrategy,
+  useSortable,
+  sortableKeyboardCoordinates,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
+/** Props to spread onto the drag-handle element (button). Includes the dnd-kit
+ *  listeners + a11y attributes (keyboard reordering works when focused). */
+export type DragHandle = Record<string, unknown>;
 
 type Props<T> = {
   items: T[];
   getId: (item: T) => string;
-  /** Persist the new order (debounced after a drag settles). */
   onReorder: (orderedIds: string[]) => void;
-  /** Render the row; `controls.start(e)` on a handle's onPointerDown starts a drag. */
-  children: (item: T, controls: DragControls) => ReactNode;
-  axis?: "x" | "y";
+  children: (item: T, handle: DragHandle) => ReactNode;
+  /** "list" = vertical; "grid" = wrapping grid (use for multi-column). */
+  strategy?: "list" | "grid";
   className?: string;
 };
 
-function ReorderableItem<T>({
+function SortableRow({
   id,
-  item,
   render,
 }: {
   id: string;
-  item: T;
-  render: (item: T, controls: DragControls) => ReactNode;
+  render: (handle: DragHandle) => ReactNode;
 }) {
-  const controls = useDragControls();
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
   return (
-    <Reorder.Item value={id} dragListener={false} dragControls={controls}>
-      {render(item, controls)}
-    </Reorder.Item>
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        zIndex: isDragging ? 50 : undefined,
+      }}
+      className={isDragging ? "opacity-90" : undefined}
+    >
+      {render({ ...attributes, ...(listeners ?? {}) })}
+    </div>
   );
 }
 
 /**
- * Drag-and-drop reorderable list (framer-motion). Dragging is handle-driven
- * (`dragListener={false}`) so the rest of the row stays clickable. Persists the
- * final order debounced; re-syncs when server items change.
+ * Drag-and-drop reorderable list or grid (dnd-kit). Drag from a handle that
+ * spreads the provided `handle` props; keyboard reordering works too. Persists
+ * the final order (debounced) and re-syncs when server items change.
  */
 export function Reorderable<T>({
   items,
   getId,
   onReorder,
   children,
-  axis = "y",
+  strategy = "list",
   className,
 }: Props<T>) {
   const [order, setOrder] = useState<string[]>(() => items.map(getId));
@@ -55,28 +88,50 @@ export function Reorderable<T>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idsKey]);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
   const byId = new Map(items.map((it) => [getId(it), it]));
 
-  function handleReorder(next: string[]) {
-    setOrder(next);
-    if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(() => persist.current(next), 500);
+  function onDragEnd(e: DragEndEvent) {
+    const { active, over } = e;
+    if (!over || active.id === over.id) return;
+    setOrder((prev) => {
+      const next = arrayMove(
+        prev,
+        prev.indexOf(active.id as string),
+        prev.indexOf(over.id as string)
+      );
+      if (timer.current) clearTimeout(timer.current);
+      timer.current = setTimeout(() => persist.current(next), 400);
+      return next;
+    });
   }
 
   return (
-    <Reorder.Group
-      axis={axis}
-      values={order}
-      onReorder={handleReorder}
-      className={className}
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={onDragEnd}
     >
-      {order.map((id) => {
-        const item = byId.get(id);
-        if (!item) return null;
-        return (
-          <ReorderableItem key={id} id={id} item={item} render={children} />
-        );
-      })}
-    </Reorder.Group>
+      <SortableContext
+        items={order}
+        strategy={
+          strategy === "grid" ? rectSortingStrategy : verticalListSortingStrategy
+        }
+      >
+        <div className={className}>
+          {order.map((id) => {
+            const item = byId.get(id);
+            if (!item) return null;
+            return (
+              <SortableRow key={id} id={id} render={(h) => children(item, h)} />
+            );
+          })}
+        </div>
+      </SortableContext>
+    </DndContext>
   );
 }

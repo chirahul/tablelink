@@ -17,6 +17,7 @@ import {
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -206,14 +207,13 @@ export function MenuItemsManager({ items, categories }: Props) {
         onClick={() => setEditing(i)}
         className="p-3 rounded-lg border bg-card flex items-center gap-3 cursor-pointer hover:border-primary/30 hover:shadow-sm transition-all"
       >
-        <input
-          type="checkbox"
-          checked={selected.has(i.id)}
-          onClick={(e) => e.stopPropagation()}
-          onChange={() => toggleSelect(i.id)}
-          className="w-4 h-4 accent-primary shrink-0"
-          aria-label={`Select ${i.name}`}
-        />
+        <span onClick={(e) => e.stopPropagation()} className="shrink-0 flex">
+          <Checkbox
+            checked={selected.has(i.id)}
+            onCheckedChange={() => toggleSelect(i.id)}
+            aria-label={`Select ${i.name}`}
+          />
+        </span>
         {dragHandle}
         {i.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -390,11 +390,11 @@ export function MenuItemsManager({ items, categories }: Props) {
                       onReorder={onReorderCategory}
                       className="space-y-2"
                     >
-                      {(i, controls) =>
+                      {(i, handle) =>
                         renderItem(
                           i,
                           <button
-                            onPointerDown={(e) => controls.start(e)}
+                            {...handle}
                             onClick={(e) => e.stopPropagation()}
                             className="cursor-grab active:cursor-grabbing text-muted-foreground touch-none shrink-0"
                             aria-label="Drag to reorder"

@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/dialog";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { ActionsMenu } from "@/components/shared/actions-menu";
+import { EmptyState } from "@/components/shared/empty-state";
 import { Reorderable } from "@/components/shared/reorderable";
 import { buildQrPdf, downloadBlob, type QrEntry } from "@/lib/qr-pdf";
 import {
@@ -321,31 +322,29 @@ export function TablesManager({
       )}
 
       {tables.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border bg-card">
-          <div className="w-16 h-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-4">
-            <LayoutGrid className="w-7 h-7" />
-          </div>
-          <h3 className="text-lg font-semibold mb-1">No tables yet</h3>
-          <p className="text-sm text-muted-foreground max-w-sm mb-6">
-            Add your restaurant&apos;s tables and generate a unique QR code for
-            each. Customers scan the QR to order from that table.
-          </p>
-          <Button onClick={() => setCreating(true)} className="gap-1">
-            <Plus className="w-4 h-4" /> Add your first table
-          </Button>
-        </div>
+        <EmptyState
+          card
+          icon={<LayoutGrid className="w-7 h-7" />}
+          title="No tables yet"
+          description="Add your restaurant's tables and generate a unique QR code for each. Customers scan the QR to order from that table."
+          action={{
+            label: "Add your first table",
+            onClick: () => setCreating(true),
+          }}
+        />
       ) : sortable ? (
         <Reorderable
           items={visible}
           getId={(t) => t.id}
           onReorder={onReorder}
+          strategy="grid"
           className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
         >
-          {(t, controls) =>
+          {(t, handle) =>
             renderCard(
               t,
               <button
-                onPointerDown={(e) => controls.start(e)}
+                {...handle}
                 onClick={(e) => e.stopPropagation()}
                 className="cursor-grab active:cursor-grabbing text-muted-foreground touch-none shrink-0"
                 aria-label="Drag to reorder"
