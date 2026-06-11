@@ -23,8 +23,9 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex min-h-screen">
-      {/* Desktop sidebar — pinned full height; nav scrolls, logout stays put */}
-      <aside className="hidden md:flex w-64 flex-col border-r bg-muted/20 sticky top-0 h-screen">
+      {/* Desktop sidebar — fixed full height (reliable on iPad/iOS); nav
+          scrolls internally, logout stays pinned at the bottom */}
+      <aside className="hidden md:flex md:fixed md:inset-y-0 md:left-0 z-30 w-64 flex-col border-r bg-muted/20">
         <div className="flex h-16 items-center border-b px-6 shrink-0">
           <Link href="/dashboard" className="font-bold text-lg tracking-tight">
             {APP_NAME}
@@ -49,7 +50,7 @@ export default async function DashboardLayout({
       </aside>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0 md:ml-64">
         {/* Mobile header */}
         <header className="flex h-16 items-center justify-between border-b px-4 md:hidden bg-background/80 backdrop-blur-xl">
           <div className="flex items-center gap-2">
