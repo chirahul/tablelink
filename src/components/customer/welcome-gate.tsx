@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { GoogleButton } from "@/components/shared/google-button";
 import { createClient } from "@/lib/supabase/client";
 
 type Props = {
@@ -133,6 +134,8 @@ export function WelcomeGate({ restaurantName, tableNumber, children }: Props) {
                 </span>
                 <span className="text-xs opacity-70">Fastest →</span>
               </Button>
+
+              <GoogleButton label="Continue with Google" />
 
               <Button
                 size="lg"

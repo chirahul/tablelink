@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { GoogleButton } from "@/components/shared/google-button";
 import { login } from "../actions";
 
 export function LoginForm() {
@@ -69,6 +70,14 @@ export function LoginForm() {
       <Button type="submit" className="w-full" disabled={isPending}>
         {isPending ? "Logging in..." : "Login"}
       </Button>
+
+      <div className="flex items-center gap-3 py-1">
+        <span className="h-px flex-1 bg-border" />
+        <span className="text-xs text-muted-foreground">or</span>
+        <span className="h-px flex-1 bg-border" />
+      </div>
+
+      <GoogleButton next={redirectTo || "/dashboard"} />
     </form>
   );
 }
