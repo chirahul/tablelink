@@ -118,8 +118,8 @@ export default async function OrdersPage({ searchParams }: Props) {
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold tracking-tight">Orders</h1>
-          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-green-700 bg-green-100 px-2.5 py-1 rounded-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-600" />
+          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-success bg-success-container px-2.5 py-1 rounded-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-success" />
             Ordering System Online
           </span>
         </div>

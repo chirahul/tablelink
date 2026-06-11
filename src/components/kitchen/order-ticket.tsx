@@ -94,7 +94,7 @@ export function OrderTicket({ order, onLocalUpdate }: Props) {
     : elapsedMin > 10
       ? "text-destructive font-semibold"
       : elapsedMin > 5
-        ? "text-amber-600 font-medium"
+        ? "text-warning font-medium"
         : "text-muted-foreground";
 
   function updateStatus(next: OrderStatus) {
@@ -192,7 +192,7 @@ export function OrderTicket({ order, onLocalUpdate }: Props) {
                   </div>
                 )}
                 {oi.notes && (
-                  <div className="pl-6 text-xs italic text-orange-700">
+                  <div className="pl-6 text-xs italic text-warning">
                     &ldquo;{oi.notes}&rdquo;
                   </div>
                 )}
@@ -212,7 +212,7 @@ export function OrderTicket({ order, onLocalUpdate }: Props) {
 
       {/* Order-level notes */}
       {order.notes && (
-        <div className="text-xs italic bg-orange-50 text-orange-900 p-2 rounded mb-3 border border-orange-200">
+        <div className="text-xs italic bg-warning-container text-warning p-2 rounded mb-3 border border-border">
           &ldquo;{order.notes}&rdquo;
         </div>
       )}

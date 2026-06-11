@@ -18,22 +18,22 @@ const COLUMNS: { title: string; statuses: OrderStatus[]; accent: string }[] = [
   {
     title: "New",
     statuses: ["pending", "confirmed"],
-    accent: "bg-yellow-50 border-yellow-200",
+    accent: "bg-info-container border-border",
   },
   {
     title: "Preparing",
     statuses: ["preparing"],
-    accent: "bg-orange-50 border-orange-200",
+    accent: "bg-warning-container border-border",
   },
   {
     title: "Ready",
     statuses: ["ready"],
-    accent: "bg-green-50 border-green-200",
+    accent: "bg-success-container border-border",
   },
   {
     title: "Served",
     statuses: ["served"],
-    accent: "bg-gray-50 border-gray-200",
+    accent: "bg-muted border-border",
   },
 ];
 

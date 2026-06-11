@@ -111,7 +111,8 @@ export function TablesManager({
   function onReorder(ids: string[]) {
     startTransition(async () => {
       const r = await reorderTables(ids);
-      if (!r.success) toast.error(r.error);
+      if (r.success) toast.success("Order updated");
+      else toast.error(r.error);
     });
   }
 

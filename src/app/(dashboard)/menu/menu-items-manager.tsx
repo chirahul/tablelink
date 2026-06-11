@@ -130,7 +130,8 @@ export function MenuItemsManager({ items, categories }: Props) {
   function onReorderCategory(ids: string[]) {
     startTransition(async () => {
       const r = await reorderMenuItems(ids);
-      if (!r.success) toast.error(r.error);
+      if (r.success) toast.success("Order updated");
+      else toast.error(r.error);
     });
   }
 
@@ -189,7 +190,7 @@ export function MenuItemsManager({ items, categories }: Props) {
   }
 
   const chip = (active: boolean) =>
-    `px-3 py-1 rounded-full text-xs border transition-colors ${
+    `px-3 py-1 rounded-full text-xs border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
       active
         ? "bg-primary text-primary-foreground border-primary"
         : "hover:border-primary/40 hover:bg-accent"
@@ -232,7 +233,7 @@ export function MenuItemsManager({ items, categories }: Props) {
             <VegIndicator isVeg={i.is_veg} />
             <span className="font-medium truncate">{i.name}</span>
             {missing.length > 0 && (
-              <span className="inline-flex items-center gap-1 text-[10px] text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded-full">
+              <span className="inline-flex items-center gap-1 text-[10px] text-warning bg-warning-container px-1.5 py-0.5 rounded-full">
                 <AlertTriangle className="w-3 h-3" />
                 No {missing.join(" / ")}
               </span>
@@ -255,7 +256,7 @@ export function MenuItemsManager({ items, categories }: Props) {
         >
           <span
             className={`text-xs font-medium hidden sm:inline ${
-              i.is_available ? "text-green-700" : "text-muted-foreground"
+              i.is_available ? "text-success" : "text-muted-foreground"
             }`}
           >
             {i.is_available ? "Active" : "Hidden"}
@@ -418,21 +419,32 @@ export function MenuItemsManager({ items, categories }: Props) {
 
       {/* Bulk action bar */}
       {selected.size > 0 && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-foreground text-background rounded-full shadow-xl px-4 py-2 text-sm">
-          <span className="font-medium">{selected.size} selected</span>
-          <span className="w-px h-4 bg-background/30" />
-          <button disabled={isPending} onClick={() => bulkAvailability(true)} className="hover:underline">
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 bg-card text-foreground rounded-full shadow-xl border px-2 py-1.5 text-sm">
+          <span className="font-medium px-2">{selected.size} selected</span>
+          <span className="w-px h-5 bg-border" />
+          <Button size="sm" variant="ghost" disabled={isPending} onClick={() => bulkAvailability(true)}>
             Enable
-          </button>
-          <button disabled={isPending} onClick={() => bulkAvailability(false)} className="hover:underline">
+          </Button>
+          <Button size="sm" variant="ghost" disabled={isPending} onClick={() => bulkAvailability(false)}>
             Hide
-          </button>
-          <button disabled={isPending} onClick={() => setBulkDeleting(true)} className="text-red-300 hover:underline">
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            disabled={isPending}
+            onClick={() => setBulkDeleting(true)}
+            className="text-destructive hover:text-destructive"
+          >
             Delete
-          </button>
-          <button onClick={() => setSelected(new Set())} className="opacity-70 hover:opacity-100">
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setSelected(new Set())}
+            className="text-muted-foreground"
+          >
             Clear
-          </button>
+          </Button>
         </div>
       )}
 

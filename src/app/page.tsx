@@ -285,7 +285,7 @@ export default function HomePage() {
                 <ul className="space-y-2.5 text-sm mb-8">
                   {["Unlimited menu items", "Up to 10 tables", "QR code generator", "Live kitchen display", "UPI + counter payments", "Basic analytics"].map((t) => (
                     <li key={t} className="flex items-start gap-2">
-                      <Check className="w-4 h-4 text-green-600 mt-0.5 shrink-0" />
+                      <Check className="w-4 h-4 text-success mt-0.5 shrink-0" />
                       <span>{t}</span>
                     </li>
                   ))}
@@ -314,7 +314,7 @@ export default function HomePage() {
                 <ul className="space-y-2.5 text-sm mb-8">
                   {["Everything in Starter", "Unlimited tables", "Advanced analytics & reports", "CSV export", "Custom branding & colors", "Priority support", "Multi-language menus"].map((t) => (
                     <li key={t} className="flex items-start gap-2">
-                      <Check className="w-4 h-4 text-green-600 mt-0.5 shrink-0" />
+                      <Check className="w-4 h-4 text-success mt-0.5 shrink-0" />
                       <span>{t}</span>
                     </li>
                   ))}

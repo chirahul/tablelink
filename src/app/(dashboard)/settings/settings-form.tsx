@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Copy, ExternalLink, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -125,6 +125,22 @@ export function SettingsForm({ restaurant }: Props) {
   if (Number.isNaN(taxNum) || taxNum < 0 || taxNum > 100)
     errors.tax_rate = "Tax rate must be 0–100";
   const hasErrors = Object.keys(errors).length > 0;
+  const tabErr = {
+    profile: !!(errors.name || errors.phone || errors.email),
+    payments: !!errors.upi_id,
+    taxes: !!errors.tax_rate,
+  };
+
+  // Warn before leaving with unsaved changes.
+  useEffect(() => {
+    if (!dirty) return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [dirty]);
 
   const menuLink =
     typeof window !== "undefined"
@@ -173,7 +189,7 @@ export function SettingsForm({ restaurant }: Props) {
   const SaveBar = (
     <div className="flex items-center justify-between gap-3 py-3">
       <span
-        className={`text-sm ${dirty ? "text-amber-600 font-medium" : "text-muted-foreground"}`}
+        className={`text-sm ${dirty ? "text-warning font-medium" : "text-muted-foreground"}`}
       >
         {dirty ? "● Unsaved changes" : "All changes saved"}
       </span>
@@ -195,9 +211,24 @@ export function SettingsForm({ restaurant }: Props) {
 
       <Tabs defaultValue="profile">
         <TabsList variant="line" className="mb-6">
-          <TabsTrigger value="profile">Profile</TabsTrigger>
-          <TabsTrigger value="payments">Payments</TabsTrigger>
-          <TabsTrigger value="taxes">Taxes</TabsTrigger>
+          <TabsTrigger value="profile">
+            Profile
+            {tabErr.profile && (
+              <span className="ml-1.5 w-1.5 h-1.5 rounded-full bg-destructive inline-block" />
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="payments">
+            Payments
+            {tabErr.payments && (
+              <span className="ml-1.5 w-1.5 h-1.5 rounded-full bg-destructive inline-block" />
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="taxes">
+            Taxes
+            {tabErr.taxes && (
+              <span className="ml-1.5 w-1.5 h-1.5 rounded-full bg-destructive inline-block" />
+            )}
+          </TabsTrigger>
         </TabsList>
 
         {/* PROFILE */}

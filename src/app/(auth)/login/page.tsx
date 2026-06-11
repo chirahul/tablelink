@@ -32,7 +32,7 @@ export default async function LoginPage({ searchParams }: Props) {
       </CardHeader>
       <CardContent className="space-y-4 pt-4">
         {showEmailNotice && (
-          <div className="rounded-xl bg-blue-50 border border-blue-200 p-3 text-sm text-blue-900">
+          <div className="rounded-xl bg-info-container border border-border p-3 text-sm text-info">
             Account created! Please check your email to confirm, then log in.
           </div>
         )}

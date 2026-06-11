@@ -15,6 +15,7 @@ export default function AccountPage() {
   const slug = useCartStore((s) => s.restaurantSlug);
   const tableId = useCartStore((s) => s.tableId);
   const [phone, setPhone] = useState<string | null>(null);
+  const [name, setName] = useState<string | null>(null);
   const [authed, setAuthed] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -22,6 +23,13 @@ export default function AccountPage() {
     supabase.auth.getUser().then(({ data }) => {
       setAuthed(!!data.user);
       setPhone(data.user?.phone ?? null);
+      const meta = data.user?.user_metadata ?? {};
+      setName(
+        (meta.full_name as string | undefined) ??
+          (meta.name as string | undefined) ??
+          data.user?.email ??
+          null
+      );
     });
   }, []);
 
@@ -61,7 +69,7 @@ export default function AccountPage() {
           <User className="w-6 h-6" />
         </div>
         <div className="min-w-0">
-          <p className="font-semibold">Guest customer</p>
+          <p className="font-semibold truncate">{name ?? "Customer"}</p>
           {phone ? (
             <p className="text-sm text-muted-foreground flex items-center gap-1.5">
               <Phone className="w-3.5 h-3.5" />

@@ -12,6 +12,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { APP_NAME } from "@/lib/constants";
+import { isNavActive } from "./sidebar-nav";
 
 const links = [
   { href: "/dashboard", label: "Dashboard" },
@@ -50,7 +51,7 @@ export function MobileNav({ userEmail }: Props) {
           </SheetHeader>
           <nav className="flex-1 px-4 py-4 space-y-1">
             {links.map((link) => {
-              const active = pathname === link.href;
+              const active = isNavActive(pathname, link.href);
               return (
                 <Link
                   key={link.href}

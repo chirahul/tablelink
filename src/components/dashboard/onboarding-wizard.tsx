@@ -59,17 +59,17 @@ export function OnboardingWizard({ status }: Props) {
 
   if (allDone) {
     return (
-      <Card className="mb-6 border-green-200 bg-green-50">
+      <Card className="mb-6 border-border bg-success-container">
         <CardContent className="py-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-full bg-success text-white flex items-center justify-center shrink-0">
               <Rocket className="w-5 h-5" />
             </div>
             <div>
-              <div className="font-semibold text-green-900">
+              <div className="font-semibold text-success">
                 You&apos;re all set!
               </div>
-              <div className="text-sm text-green-800">
+              <div className="text-sm text-success">
                 Your menu is live at{" "}
                 <Link
                   href={`/menu/${status.menuSlug}`}
@@ -86,7 +86,7 @@ export function OnboardingWizard({ status }: Props) {
             variant="ghost"
             size="icon"
             onClick={() => setDismissed(true)}
-            className="text-green-700 shrink-0"
+            className="text-success shrink-0"
           >
             <X className="w-4 h-4" />
           </Button>
@@ -121,7 +121,7 @@ export function OnboardingWizard({ status }: Props) {
             <div
               key={s.key}
               className={`h-1.5 flex-1 rounded-full transition-colors ${
-                status[s.key] ? "bg-green-500" : "bg-muted"
+                status[s.key] ? "bg-success" : "bg-muted"
               }`}
             />
           ))}
@@ -143,7 +143,7 @@ export function OnboardingWizard({ status }: Props) {
                 <div
                   className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${
                     done
-                      ? "bg-green-500 text-white"
+                      ? "bg-success text-white"
                       : "border-2 border-muted-foreground/40"
                   }`}
                 >

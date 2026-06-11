@@ -12,16 +12,16 @@ export const ORDER_STATUS_LABELS: Record<string, string> = {
   cancelled: "Cancelled",
 };
 
-// Status pill colors — aligned to the TheTableLynk design system:
-// New/incoming = primary orange, Preparing = amber, Ready = green,
-// Served/Paid = neutral grey, Cancelled = error red.
+// Status pill colors — semantic tokens, dark-mode aware (see globals.css).
+// New/Confirmed = info, Preparing = warning, Ready = success,
+// Served = neutral, Cancelled = destructive.
 export const ORDER_STATUS_COLORS: Record<string, string> = {
-  pending: "bg-accent text-accent-foreground",
-  confirmed: "bg-amber-100 text-amber-900",
-  preparing: "bg-orange-100 text-orange-900",
-  ready: "bg-green-100 text-green-900",
+  pending: "bg-info-container text-info",
+  confirmed: "bg-info-container text-info",
+  preparing: "bg-warning-container text-warning",
+  ready: "bg-success-container text-success",
   served: "bg-muted text-muted-foreground",
-  cancelled: "bg-red-100 text-red-900",
+  cancelled: "bg-destructive-container text-destructive",
 };
 
 export const DEFAULT_CURRENCY = "INR";

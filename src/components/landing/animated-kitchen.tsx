@@ -19,10 +19,10 @@ const INITIAL_ORDERS: OrderCard[] = [
 ];
 
 const COLUMNS = [
-  { key: "new" as const, title: "New", accent: "bg-yellow-50 border-yellow-200 text-yellow-800" },
-  { key: "preparing" as const, title: "Preparing", accent: "bg-orange-50 border-orange-200 text-orange-800" },
-  { key: "ready" as const, title: "Ready", accent: "bg-green-50 border-green-200 text-green-800" },
-  { key: "served" as const, title: "Served", accent: "bg-gray-50 border-gray-200 text-gray-600" },
+  { key: "new" as const, title: "New", accent: "bg-info-container border-border text-info" },
+  { key: "preparing" as const, title: "Preparing", accent: "bg-warning-container border-border text-warning" },
+  { key: "ready" as const, title: "Ready", accent: "bg-success-container border-border text-success" },
+  { key: "served" as const, title: "Served", accent: "bg-muted border-border text-muted-foreground" },
 ];
 
 const NEXT_STATUS: Record<string, OrderCard["status"]> = {

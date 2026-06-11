@@ -169,11 +169,6 @@ export default async function DashboardPage() {
                   <ExternalLink className="w-4 h-4" /> View Customer Menu
                 </Button>
               </Link>
-              <Link href="/tables">
-                <Button variant="outline" className="gap-2">
-                  <Printer className="w-4 h-4" /> Print QR
-                </Button>
-              </Link>
               <CopyLinkButton url={menuLink} />
             </>
           )}

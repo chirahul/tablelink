@@ -64,8 +64,8 @@ export function MenuBrowser({ restaurant, categories, items, table }: Props) {
     <>
       <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b">
         {!isOpen && (
-          <div className="bg-orange-50 border-b border-orange-200 px-4 py-2">
-            <div className="container max-w-2xl mx-auto flex items-center gap-2 text-sm text-orange-900">
+          <div className="bg-warning-container border-b border-border px-4 py-2">
+            <div className="container max-w-2xl mx-auto flex items-center gap-2 text-sm text-warning">
               <Clock className="w-4 h-4 shrink-0" />
               <span>
                 Currently closed

@@ -1,29 +1,11 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import {
-  LayoutDashboard,
-  ShoppingBag,
-  UtensilsCrossed,
-  QrCode,
-  ChefHat,
-  BarChart3,
-  Settings,
-} from "lucide-react";
 import { APP_NAME } from "@/lib/constants";
 import { logout } from "../(auth)/actions";
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { MobileNav } from "@/components/dashboard/mobile-nav";
-
-const sidebarLinks = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/orders", label: "Orders", icon: ShoppingBag },
-  { href: "/menu", label: "Menu", icon: UtensilsCrossed },
-  { href: "/tables", label: "Tables & QR", icon: QrCode },
-  { href: "/kitchen", label: "Kitchen", icon: ChefHat },
-  { href: "/analytics", label: "Analytics", icon: BarChart3 },
-  { href: "/settings", label: "Settings", icon: Settings },
-];
+import { SidebarNav } from "@/components/dashboard/sidebar-nav";
 
 export default async function DashboardLayout({
   children,
@@ -48,21 +30,7 @@ export default async function DashboardLayout({
             {APP_NAME}
           </Link>
         </div>
-        <nav className="flex-1 px-3 py-4 space-y-0.5">
-          {sidebarLinks.map((link) => {
-            const Icon = link.icon;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-all duration-200"
-              >
-                <Icon className="w-4 h-4" />
-                {link.label}
-              </Link>
-            );
-          })}
-        </nav>
+        <SidebarNav />
         <div className="border-t p-4 space-y-2">
           <p className="text-xs text-muted-foreground truncate px-3">
             {user.email}

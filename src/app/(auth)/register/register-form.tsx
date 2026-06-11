@@ -17,10 +17,10 @@ function getStrength(pw: string): { score: number; label: string; color: string 
   if (/[0-9]/.test(pw)) s += 1;
   if (/[^A-Za-z0-9]/.test(pw)) s += 1;
 
-  if (s <= 1) return { score: 1, label: "Weak", color: "bg-red-500" };
-  if (s <= 2) return { score: 2, label: "Fair", color: "bg-orange-500" };
-  if (s <= 3) return { score: 3, label: "Good", color: "bg-yellow-500" };
-  return { score: 4, label: "Strong", color: "bg-green-500" };
+  if (s <= 1) return { score: 1, label: "Weak", color: "bg-destructive" };
+  if (s <= 2) return { score: 2, label: "Fair", color: "bg-warning" };
+  if (s <= 3) return { score: 3, label: "Good", color: "bg-chart-2" };
+  return { score: 4, label: "Strong", color: "bg-success" };
 }
 
 export function RegisterForm() {

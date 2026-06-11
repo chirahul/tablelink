@@ -188,7 +188,7 @@ export function OrderDetailDialog({ orderId, onClose }: Props) {
                         </div>
                       )}
                       {oi.notes && (
-                        <div className="text-xs italic text-orange-700 pl-6">
+                        <div className="text-xs italic text-warning pl-6">
                           &ldquo;{oi.notes}&rdquo;
                         </div>
                       )}
@@ -202,7 +202,7 @@ export function OrderDetailDialog({ orderId, onClose }: Props) {
             </div>
 
             {order.notes && (
-              <div className="text-xs bg-orange-50 text-orange-900 p-3 rounded-xl border border-orange-200">
+              <div className="text-xs bg-warning-container text-warning p-3 rounded-xl border border-border">
                 <span className="font-medium">Note: </span>
                 {order.notes}
               </div>

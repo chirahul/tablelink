@@ -77,7 +77,7 @@ export function OrderTracker({ initialOrder }: Props) {
 
       {/* Status tracker */}
       {isCancelled ? (
-        <div className="flex items-center gap-3 p-5 rounded-2xl bg-red-50 border border-red-200 text-red-900 mb-8">
+        <div className="flex items-center gap-3 p-5 rounded-2xl bg-destructive-container border border-border text-destructive mb-8">
           <X className="w-5 h-5" />
           <span className="font-semibold">Order cancelled</span>
         </div>
