@@ -26,11 +26,15 @@ const links = [
 
 type Props = {
   userEmail: string | null;
+  isSuperAdmin?: boolean;
 };
 
-export function MobileNav({ userEmail }: Props) {
+export function MobileNav({ userEmail, isSuperAdmin = false }: Props) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const items = isSuperAdmin
+    ? [...links, { href: "/admin", label: "Admin" }]
+    : links;
 
   return (
     <>
@@ -50,7 +54,7 @@ export function MobileNav({ userEmail }: Props) {
             <SheetTitle className="font-bold text-lg">{APP_NAME}</SheetTitle>
           </SheetHeader>
           <nav className="flex-1 px-4 py-4 space-y-1">
-            {links.map((link) => {
+            {items.map((link) => {
               const active = isNavActive(pathname, link.href);
               return (
                 <Link

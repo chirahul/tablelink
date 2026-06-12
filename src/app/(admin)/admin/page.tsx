@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Store, ShoppingBag, IndianRupee, UserPlus } from "lucide-react";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StatCard } from "@/components/shared/stat-card";
 import { formatCurrency, formatRelativeTime } from "@/lib/format";
 
 export const metadata: Metadata = {
@@ -38,6 +39,7 @@ export default async function SuperAdminPage() {
     admin
       .from("orders")
       .select("total")
+      .neq("status", "cancelled")
       .gte("created_at", todayStart.toISOString()),
     admin
       .from("restaurants")
@@ -67,51 +69,27 @@ export default async function SuperAdminPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Restaurants
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalRestaurants ?? 0}</div>
-            <div className="text-xs text-muted-foreground">
-              {activeRestaurants ?? 0} active
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Orders Today
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{ordersToday ?? 0}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Revenue Today
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {formatCurrency(revenueToday)}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              New Signups (7d)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{newSignupsWeek ?? 0}</div>
-          </CardContent>
-        </Card>
+        <StatCard
+          label="Total Restaurants"
+          value={totalRestaurants ?? 0}
+          sub={`${activeRestaurants ?? 0} active`}
+          icon={<Store className="w-4 h-4" />}
+        />
+        <StatCard
+          label="Orders Today"
+          value={ordersToday ?? 0}
+          icon={<ShoppingBag className="w-4 h-4" />}
+        />
+        <StatCard
+          label="Revenue Today"
+          value={formatCurrency(revenueToday)}
+          icon={<IndianRupee className="w-4 h-4" />}
+        />
+        <StatCard
+          label="New Signups (7d)"
+          value={newSignupsWeek ?? 0}
+          icon={<UserPlus className="w-4 h-4" />}
+        />
       </div>
 
       <div className="flex items-center justify-between mb-3">

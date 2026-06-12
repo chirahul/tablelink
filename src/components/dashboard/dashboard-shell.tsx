@@ -15,10 +15,16 @@ import logo from "@/assets/logo-wide.png";
 type Props = {
   userEmail: string | null;
   initialCollapsed: boolean;
+  isSuperAdmin?: boolean;
   children: React.ReactNode;
 };
 
-export function DashboardShell({ userEmail, initialCollapsed, children }: Props) {
+export function DashboardShell({
+  userEmail,
+  initialCollapsed,
+  isSuperAdmin = false,
+  children,
+}: Props) {
   const [collapsed, setCollapsed] = useState(initialCollapsed);
 
   function toggle() {
@@ -60,7 +66,7 @@ export function DashboardShell({ userEmail, initialCollapsed, children }: Props)
           </button>
         </div>
 
-        <SidebarNav collapsed={collapsed} />
+        <SidebarNav collapsed={collapsed} isSuperAdmin={isSuperAdmin} />
 
         <div className="border-t p-3 shrink-0">
           {!collapsed && userEmail && (
@@ -92,7 +98,7 @@ export function DashboardShell({ userEmail, initialCollapsed, children }: Props)
       >
         <header className="flex h-16 items-center justify-between border-b px-4 md:hidden bg-background/80 backdrop-blur-xl">
           <div className="flex items-center gap-2">
-            <MobileNav userEmail={userEmail} />
+            <MobileNav userEmail={userEmail} isSuperAdmin={isSuperAdmin} />
             <Link href="/dashboard" aria-label={APP_NAME}>
               <Image src={logo} alt={APP_NAME} className="h-9 w-auto rounded-md" />
             </Link>

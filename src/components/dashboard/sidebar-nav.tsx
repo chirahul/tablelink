@@ -10,6 +10,7 @@ import {
   ChefHat,
   BarChart3,
   Settings,
+  Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -23,17 +24,26 @@ const links = [
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
+const adminLink = { href: "/admin", label: "Admin", icon: Shield };
+
 /** Match exact for /dashboard, prefix for the rest (so sub-routes stay active). */
 export function isNavActive(pathname: string, href: string): boolean {
   if (href === "/dashboard") return pathname === "/dashboard";
   return pathname === href || pathname.startsWith(href + "/");
 }
 
-export function SidebarNav({ collapsed = false }: { collapsed?: boolean }) {
+export function SidebarNav({
+  collapsed = false,
+  isSuperAdmin = false,
+}: {
+  collapsed?: boolean;
+  isSuperAdmin?: boolean;
+}) {
   const pathname = usePathname();
+  const items = isSuperAdmin ? [...links, adminLink] : links;
   return (
     <nav className="flex-1 min-h-0 overflow-y-auto px-3 py-4 space-y-0.5">
-      {links.map(({ href, label, icon: Icon }) => {
+      {items.map(({ href, label, icon: Icon }) => {
         const active = isNavActive(pathname, href);
         return (
           <Link
