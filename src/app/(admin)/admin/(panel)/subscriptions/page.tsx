@@ -4,7 +4,9 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { StatCard } from "@/components/shared/stat-card";
 import { formatCurrency } from "@/lib/format";
 import { getSubscriptionState, recommendPlan, PLANS, type PlanId } from "@/lib/plans";
+import { getBillingConfig } from "@/lib/billing-config";
 import { SubscriptionsList, type SubRow } from "./subscriptions-list";
+import { BillingSettings } from "./billing-settings";
 
 export const metadata: Metadata = { title: "Subscriptions" };
 
@@ -47,6 +49,8 @@ export default async function AdminSubscriptionsPage() {
     .filter((r) => r.status === "active" && r.plan && PLANS[r.plan]?.priceYear)
     .reduce((s, r) => s + (PLANS[r.plan as PlanId].priceYear ?? 0), 0);
 
+  const billingConfig = await getBillingConfig();
+
   return (
     <div className="space-y-5">
       <div>
@@ -62,6 +66,8 @@ export default async function AdminSubscriptionsPage() {
         <StatCard label="Expired" value={expired} icon={<XCircle className="w-4 h-4" />} />
         <StatCard label="Annual Run-Rate" value={formatCurrency(arr)} icon={<IndianRupee className="w-4 h-4" />} />
       </div>
+
+      <BillingSettings config={billingConfig} />
 
       <SubscriptionsList rows={rows} />
     </div>

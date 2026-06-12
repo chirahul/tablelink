@@ -137,3 +137,23 @@ export async function resetTrial(restaurantId: string): Promise<ActionResult> {
   revalidateBilling();
   return { success: true, message: "3-day trial started" };
 }
+
+/** Platform payment details (QR + contact) shown to owners on billing/paywall. */
+export async function updateBillingConfig(formData: FormData): Promise<ActionResult> {
+  if (!(await guard())) return { success: false, error: "Super admin access required" };
+
+  const admin = createAdminClient();
+  const { error } = await admin.from("platform_settings").upsert({
+    id: 1,
+    billing_qr_url: String(formData.get("billing_qr_url") ?? "").trim() || null,
+    billing_upi: String(formData.get("billing_upi") ?? "").trim() || null,
+    billing_phone: String(formData.get("billing_phone") ?? "").trim() || null,
+    billing_email: String(formData.get("billing_email") ?? "").trim() || null,
+    updated_at: new Date().toISOString(),
+  });
+
+  if (error) return { success: false, error: error.message };
+  revalidatePath("/admin/subscriptions");
+  revalidatePath("/billing");
+  return { success: true, message: "Payment details saved" };
+}

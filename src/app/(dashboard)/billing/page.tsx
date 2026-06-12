@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { CalendarClock, CheckCircle2, Clock } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getSubscriptionState, recommendPlan, PLANS } from "@/lib/plans";
+import { getBillingConfig } from "@/lib/billing-config";
 import { PricingPlans, PaymentInstructions } from "@/components/billing/pricing-plans";
 
 export const metadata: Metadata = { title: "Billing" };
@@ -34,6 +35,7 @@ export default async function BillingPage() {
 
   const sub = getSubscriptionState(restaurant);
   const recommended = recommendPlan(tableCount ?? 0);
+  const billingConfig = await getBillingConfig();
   const endDate = sub.endsAt
     ? new Date(sub.endsAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
     : null;
@@ -91,7 +93,7 @@ export default async function BillingPage() {
         <PricingPlans recommended={recommended} currentPlan={sub.plan?.id ?? null} />
       </div>
 
-      <PaymentInstructions />
+      <PaymentInstructions config={billingConfig} />
     </div>
   );
 }

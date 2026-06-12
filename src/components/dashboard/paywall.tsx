@@ -4,16 +4,18 @@ import { APP_NAME } from "@/lib/constants";
 import { logout } from "@/app/(auth)/actions";
 import { Button } from "@/components/ui/button";
 import { PricingPlans, PaymentInstructions } from "@/components/billing/pricing-plans";
+import { getBillingConfig } from "@/lib/billing-config";
 import type { PlanId } from "@/lib/plans";
 import logo from "@/assets/logo-wide.png";
 
-export function Paywall({
+export async function Paywall({
   recommended,
   endedTrial,
 }: {
   recommended?: PlanId;
   endedTrial: boolean;
 }) {
+  const config = await getBillingConfig();
   return (
     <div className="min-h-screen bg-[radial-gradient(120%_80%_at_50%_0%,#FBF7F0_0%,#EFE5D2_60%,#E3D4B5_100%)]">
       <div className="max-w-4xl mx-auto px-4 py-10">
@@ -43,7 +45,7 @@ export function Paywall({
 
         <div className="space-y-5">
           <PricingPlans recommended={recommended} />
-          <PaymentInstructions />
+          <PaymentInstructions config={config} />
         </div>
       </div>
     </div>
