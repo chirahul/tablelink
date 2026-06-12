@@ -67,11 +67,13 @@ export async function fetchMenuBySlug(
       .select("*")
       .eq("restaurant_id", restaurant.id)
       .eq("is_active", true)
+      .is("deleted_at", null)
       .order("sort_order", { ascending: true }),
     supabase
       .from("menu_items")
       .select("*")
       .eq("restaurant_id", restaurant.id)
+      .is("deleted_at", null)
       .order("sort_order", { ascending: true }),
     fetchPopularItemIds(supabase, restaurant.id),
   ]);

@@ -18,6 +18,7 @@ export default async function CategoriesPage() {
     .from("categories")
     .select("*")
     .eq("restaurant_id", restaurant.id)
+    .is("deleted_at", null)
     .order("sort_order", { ascending: true });
 
   return (

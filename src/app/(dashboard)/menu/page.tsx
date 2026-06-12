@@ -20,11 +20,13 @@ export default async function MenuManagementPage() {
       .from("categories")
       .select("*")
       .eq("restaurant_id", restaurant.id)
+      .is("deleted_at", null)
       .order("sort_order", { ascending: true }),
     supabase
       .from("menu_items")
       .select("*")
       .eq("restaurant_id", restaurant.id)
+      .is("deleted_at", null)
       .order("sort_order", { ascending: true }),
   ]);
 

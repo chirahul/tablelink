@@ -134,8 +134,20 @@ export async function updateCategory(
 
 export async function deleteCategory(id: string): Promise<ActionResult> {
   const supabase = await createClient();
-  const { error } = await supabase.from("categories").delete().eq("id", id);
+  const now = new Date().toISOString();
+  // Soft delete: keep the row (order history references items via category).
+  const { error } = await supabase
+    .from("categories")
+    .update({ deleted_at: now })
+    .eq("id", id);
   if (error) return { success: false, error: error.message };
+
+  // Also soft-delete the items in this category so they leave the menu.
+  await supabase
+    .from("menu_items")
+    .update({ deleted_at: now })
+    .eq("category_id", id)
+    .is("deleted_at", null);
 
   revalidatePath("/menu");
   revalidatePath("/menu/categories");
@@ -267,7 +279,11 @@ export async function toggleMenuItemAvailability(
 
 export async function deleteMenuItem(id: string): Promise<ActionResult> {
   const supabase = await createClient();
-  const { error } = await supabase.from("menu_items").delete().eq("id", id);
+  // Soft delete: preserves order history that references this item.
+  const { error } = await supabase
+    .from("menu_items")
+    .update({ deleted_at: new Date().toISOString() })
+    .eq("id", id);
   if (error) return { success: false, error: error.message };
 
   revalidatePath("/menu");

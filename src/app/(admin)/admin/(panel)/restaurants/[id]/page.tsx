@@ -51,9 +51,9 @@ export default async function AdminRestaurantDetailPage({
     { data: recentOrders },
   ] = await Promise.all([
     admin.from("orders").select("total, status").eq("restaurant_id", id),
-    admin.from("menu_items").select("*", { count: "exact", head: true }).eq("restaurant_id", id),
+    admin.from("menu_items").select("*", { count: "exact", head: true }).eq("restaurant_id", id).is("deleted_at", null),
     admin.from("tables").select("*", { count: "exact", head: true }).eq("restaurant_id", id),
-    admin.from("categories").select("*", { count: "exact", head: true }).eq("restaurant_id", id),
+    admin.from("categories").select("*", { count: "exact", head: true }).eq("restaurant_id", id).is("deleted_at", null),
     admin.from("menu_events").select("*", { count: "exact", head: true }).eq("restaurant_id", id),
     admin
       .from("menu_events")

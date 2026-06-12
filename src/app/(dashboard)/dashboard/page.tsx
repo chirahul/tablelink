@@ -90,12 +90,14 @@ export default async function DashboardPage() {
           .from("categories")
           .select("*", { count: "exact", head: true })
           .eq("restaurant_id", rid)
+          .is("deleted_at", null)
       : Promise.resolve({ count: 0 }),
     rid
       ? supabase
           .from("menu_items")
           .select("*", { count: "exact", head: true })
           .eq("restaurant_id", rid)
+          .is("deleted_at", null)
       : Promise.resolve({ count: 0 }),
     rid
       ? supabase

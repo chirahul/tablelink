@@ -93,7 +93,8 @@ export async function POST(request: Request) {
   const { data: menuItems, error: mErr } = await admin
     .from("menu_items")
     .select("id, name, price, variants, addons, is_available, restaurant_id")
-    .in("id", menuItemIds);
+    .in("id", menuItemIds)
+    .is("deleted_at", null);
 
   if (mErr || !menuItems) {
     return NextResponse.json(
