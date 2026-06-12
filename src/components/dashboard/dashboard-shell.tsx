@@ -10,6 +10,7 @@ import { APP_NAME } from "@/lib/constants";
 import { logout } from "@/app/(auth)/actions";
 import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { SidebarNav } from "@/components/dashboard/sidebar-nav";
+import { ThemeToggle } from "@/components/theme-toggle";
 import logo from "@/assets/logo-wide.png";
 
 type Props = {
@@ -76,6 +77,13 @@ export function DashboardShell({
               {userEmail}
             </p>
           )}
+          <ThemeToggle
+            showLabel={!collapsed}
+            className={cn(
+              "mb-1 py-2 rounded-xl",
+              collapsed ? "w-full justify-center px-0" : "w-full justify-start px-3"
+            )}
+          />
           <form action={logout}>
             <Button
               type="submit"

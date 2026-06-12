@@ -9,6 +9,7 @@ import { createClient } from "@/lib/supabase/server";
 import { isSuperAdmin } from "@/lib/is-super-admin";
 import { AdminNav } from "../../admin-nav";
 import { AdminSearch } from "@/components/admin/admin-search";
+import { ThemeToggle } from "@/components/theme-toggle";
 import logo from "@/assets/logo-wide.png";
 
 export default async function AdminPanelLayout({
@@ -90,6 +91,7 @@ export default async function AdminPanelLayout({
             <AdminSearch />
           </div>
           <div className="flex items-center gap-1 ml-auto">
+            <ThemeToggle className="p-2" />
             <button className="relative p-2 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors" aria-label="Notifications">
               <Bell className="w-5 h-5" />
             </button>
