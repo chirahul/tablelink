@@ -61,10 +61,12 @@ export default async function AdminRestaurantDetailPage({
       .eq("source", "qr"),
     admin
       .from("orders")
-      .select("id, order_number, total, status, created_at")
+      .select(
+        "id, order_number, total, status, created_at, customer_name, table:tables(table_number), order_items(id, quantity)"
+      )
       .eq("restaurant_id", id)
       .order("created_at", { ascending: false })
-      .limit(10),
+      .limit(12),
   ]);
 
   const orders = orderRows ?? [];
@@ -155,18 +157,35 @@ export default async function AdminRestaurantDetailPage({
             <p className="text-sm text-muted-foreground py-6 text-center">No orders yet.</p>
           ) : (
             <div className="divide-y">
-              {(recentOrders ?? []).map((o) => (
-                <div key={o.id} className="flex items-center justify-between gap-3 py-2.5">
-                  <div className="min-w-0">
-                    <div className="font-medium text-sm">{o.order_number}</div>
-                    <div className="text-xs text-muted-foreground">{formatRelativeTime(o.created_at)}</div>
-                  </div>
-                  <div className="flex items-center gap-3 shrink-0">
-                    <StatusBadge status={o.status} />
-                    <span className="font-semibold text-sm w-20 text-right">{formatCurrency(Number(o.total))}</span>
-                  </div>
-                </div>
-              ))}
+              {(recentOrders ?? []).map((o) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const oo = o as any;
+                const items = (oo.order_items ?? []).reduce(
+                  (s: number, i: { quantity: number }) => s + i.quantity,
+                  0
+                );
+                return (
+                  <Link
+                    key={oo.id}
+                    href={`/admin/orders/${oo.id}`}
+                    className="flex items-center justify-between gap-3 py-2.5 hover:bg-accent/40 -mx-2 px-2 rounded-lg transition-colors"
+                  >
+                    <div className="min-w-0">
+                      <div className="font-medium text-sm">{oo.order_number}</div>
+                      <div className="text-xs text-muted-foreground truncate">
+                        {oo.customer_name || "Guest"} · Table {oo.table?.table_number ?? "—"} ·{" "}
+                        {items} {items === 1 ? "item" : "items"} · {formatRelativeTime(oo.created_at)}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 shrink-0">
+                      <StatusBadge status={oo.status} />
+                      <span className="font-semibold text-sm w-20 text-right">
+                        {formatCurrency(Number(oo.total))}
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>
