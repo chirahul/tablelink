@@ -1,13 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowLeft, Bell, HelpCircle, LogOut, Search } from "lucide-react";
+import { ArrowLeft, Bell, HelpCircle, LogOut } from "lucide-react";
 import { APP_NAME } from "@/lib/constants";
 import { logout } from "@/app/(auth)/actions";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { isSuperAdmin } from "@/lib/is-super-admin";
 import { AdminNav } from "../../admin-nav";
+import { AdminSearch } from "@/components/admin/admin-search";
 import logo from "@/assets/logo-wide.png";
 
 export default async function AdminPanelLayout({
@@ -86,11 +87,7 @@ export default async function AdminPanelLayout({
             <Image src={logo} alt={APP_NAME} className="h-7 w-auto" />
           </Link>
           <div className="hidden sm:flex items-center gap-2 flex-1 max-w-md">
-            <div className="flex items-center gap-2 w-full rounded-xl border bg-muted/40 px-3 h-10 text-sm text-muted-foreground">
-              <Search className="w-4 h-4" />
-              <span className="flex-1">Search restaurants, orders, users…</span>
-              <kbd className="text-[10px] border rounded px-1.5 py-0.5 bg-background">⌘K</kbd>
-            </div>
+            <AdminSearch />
           </div>
           <div className="flex items-center gap-1 ml-auto">
             <button className="relative p-2 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors" aria-label="Notifications">

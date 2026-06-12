@@ -11,6 +11,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { PLAN_LIST, PLANS, type PlanId, type SubStatus } from "@/lib/plans";
 import {
   activateSubscription,
@@ -61,15 +69,31 @@ export function SubscriptionsList({ rows }: { rows: SubRow[] }) {
         ))}
       </div>
 
-      {filtered.length === 0 ? (
-        <p className="py-12 text-center text-muted-foreground">No restaurants in this view.</p>
-      ) : (
-        <div className="space-y-2">
-          {filtered.map((r) => (
-            <SubscriptionRow key={r.id} row={r} />
-          ))}
-        </div>
-      )}
+      <div className="rounded-xl border overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-muted/40">
+              <TableHead>Restaurant</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Plan</TableHead>
+              <TableHead className="text-center">Tables</TableHead>
+              <TableHead>Renewal / Trial</TableHead>
+              <TableHead className="text-right">Manage</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filtered.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} className="text-center text-muted-foreground py-10">
+                  No restaurants in this view.
+                </TableCell>
+              </TableRow>
+            ) : (
+              filtered.map((r) => <SubscriptionRow key={r.id} row={r} />)
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }
@@ -87,57 +111,62 @@ function SubscriptionRow({ row }: { row: SubRow }) {
   }
 
   return (
-    <div className="p-4 rounded-xl border bg-card flex items-center gap-4 flex-wrap">
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 flex-wrap">
-          <Link href={`/admin/restaurants/${row.id}`} className="font-semibold hover:underline">
-            {row.name}
-          </Link>
-          <span className={`text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full ${STATUS_STYLES[row.status]}`}>
-            {row.status}
-          </span>
+    <TableRow>
+      <TableCell>
+        <Link href={`/admin/restaurants/${row.id}`} className="font-medium hover:underline">
+          {row.name}
+        </Link>
+        <div className="text-xs text-muted-foreground">/menu/{row.slug}</div>
+      </TableCell>
+      <TableCell>
+        <span className={`text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full ${STATUS_STYLES[row.status]}`}>
+          {row.status}
+        </span>
+      </TableCell>
+      <TableCell className="text-sm">
+        {row.plan ? PLANS[row.plan].name : <span className="text-muted-foreground">—</span>}
+      </TableCell>
+      <TableCell className="text-center text-sm tabular-nums">{row.tables}</TableCell>
+      <TableCell className="text-sm whitespace-nowrap">
+        {row.status === "trialing"
+          ? `${row.daysLeft}d left · ${fmtDate(row.endsAt)}`
+          : row.status === "active"
+            ? `until ${fmtDate(row.endsAt)}`
+            : `expired ${fmtDate(row.endsAt)}`}
+      </TableCell>
+      <TableCell>
+        <div className="flex items-center justify-end gap-1.5 flex-nowrap">
+          <Select value={plan} onValueChange={(v) => setPlan((v as PlanId) ?? row.recommended)}>
+            <SelectTrigger className="w-28 h-8">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {PLAN_LIST.map((p) => (
+                <SelectItem key={p.id} value={p.id}>
+                  {p.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button size="sm" className="h-8" disabled={isPending} onClick={() => run(() => activateSubscription(row.id, plan))}>
+            Activate
+          </Button>
+          {row.status === "active" && (
+            <Button size="sm" variant="outline" className="h-8" disabled={isPending} onClick={() => run(() => extendSubscription(row.id))}>
+              +1yr
+            </Button>
+          )}
+          {row.status !== "expired" ? (
+            <Button size="sm" variant="outline" className="h-8" disabled={isPending} onClick={() => run(() => expireSubscription(row.id))}>
+              Expire
+            </Button>
+          ) : (
+            <Button size="sm" variant="outline" className="h-8" disabled={isPending} onClick={() => run(() => resetTrial(row.id))}>
+              Trial
+            </Button>
+          )}
         </div>
-        <div className="text-xs text-muted-foreground">
-          {row.tables} tables ·{" "}
-          {row.status === "trialing"
-            ? `${row.daysLeft}d trial left · ends ${fmtDate(row.endsAt)}`
-            : row.status === "active"
-              ? `${row.plan ? PLANS[row.plan].name : "Active"} · expires ${fmtDate(row.endsAt)}`
-              : `expired ${fmtDate(row.endsAt)}`}
-        </div>
-      </div>
-
-      <div className="flex items-center gap-2 flex-wrap">
-        <Select value={plan} onValueChange={(v) => setPlan((v as PlanId) ?? row.recommended)}>
-          <SelectTrigger className="w-32 h-9">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {PLAN_LIST.map((p) => (
-              <SelectItem key={p.id} value={p.id}>
-                {p.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Button size="sm" disabled={isPending} onClick={() => run(() => activateSubscription(row.id, plan))}>
-          Activate 1yr
-        </Button>
-        {row.status === "active" && (
-          <Button size="sm" variant="outline" disabled={isPending} onClick={() => run(() => extendSubscription(row.id))}>
-            +1yr
-          </Button>
-        )}
-        {row.status !== "expired" ? (
-          <Button size="sm" variant="outline" disabled={isPending} onClick={() => run(() => expireSubscription(row.id))}>
-            Expire
-          </Button>
-        ) : (
-          <Button size="sm" variant="outline" disabled={isPending} onClick={() => run(() => resetTrial(row.id))}>
-            Start trial
-          </Button>
-        )}
-      </div>
-    </div>
+      </TableCell>
+    </TableRow>
   );
 }
