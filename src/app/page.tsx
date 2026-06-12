@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { PricingPlans } from "@/components/billing/pricing-plans";
 import { Separator } from "@/components/ui/separator";
 import { APP_NAME } from "@/lib/constants";
 import {
@@ -266,66 +267,25 @@ export default function HomePage() {
         <Reveal>
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">Simple pricing</h2>
-            <p className="text-muted-foreground text-lg">Start free. Upgrade when you grow.</p>
+            <p className="text-muted-foreground text-lg">Try free for 3 days. Then pick the plan that fits your restaurant.</p>
           </div>
         </Reveal>
 
-        <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-          <Reveal delay={0} variant="slideRight">
-            <Card className="relative h-full">
-              <CardHeader>
-                <CardTitle className="text-xl">Starter</CardTitle>
-                <div className="mt-3">
-                  <span className="text-5xl font-bold tracking-tight">Free</span>
-                  <span className="text-muted-foreground ml-2">forever</span>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-5">Perfect for trying TheTableLynk.</p>
-                <ul className="space-y-2.5 text-sm mb-8">
-                  {["Unlimited menu items", "Up to 10 tables", "QR code generator", "Live kitchen display", "UPI + counter payments", "Basic analytics"].map((t) => (
-                    <li key={t} className="flex items-start gap-2">
-                      <Check className="w-4 h-4 text-success mt-0.5 shrink-0" />
-                      <span>{t}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link href="/register">
-                  <Button variant="outline" className="w-full h-11">Get started</Button>
-                </Link>
-              </CardContent>
-            </Card>
-          </Reveal>
-
-          <Reveal delay={0.15} variant="slideLeft">
-            <Card className="relative h-full border-foreground shadow-lg">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <Badge className="px-4 py-1 text-xs">Most Popular</Badge>
-              </div>
-              <CardHeader>
-                <CardTitle className="text-xl">Pro</CardTitle>
-                <div className="mt-3">
-                  <span className="text-5xl font-bold tracking-tight">₹999</span>
-                  <span className="text-muted-foreground ml-2">/month</span>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-5">For restaurants ready to scale.</p>
-                <ul className="space-y-2.5 text-sm mb-8">
-                  {["Everything in Starter", "Unlimited tables", "Advanced analytics & reports", "CSV export", "Custom branding & colors", "Priority support", "Multi-language menus"].map((t) => (
-                    <li key={t} className="flex items-start gap-2">
-                      <Check className="w-4 h-4 text-success mt-0.5 shrink-0" />
-                      <span>{t}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link href="/register">
-                  <Button className="w-full h-11">Start 14-day free trial</Button>
-                </Link>
-              </CardContent>
-            </Card>
-          </Reveal>
-        </div>
+        <Reveal>
+          <div className="max-w-5xl mx-auto">
+            <PricingPlans recommended="growth" />
+          </div>
+          <div className="text-center mt-10">
+            <Link href="/register">
+              <Button className="h-11 px-8 gap-2">
+                Start your 3-day free trial <ArrowRight className="w-4 h-4" />
+              </Button>
+            </Link>
+            <p className="text-xs text-muted-foreground mt-3">
+              No card required to start · prices billed annually, paid upfront (incl. 18% GST)
+            </p>
+          </div>
+        </Reveal>
       </section>
 
       {/* ============ TESTIMONIALS ============ */}
@@ -371,7 +331,7 @@ export default function HomePage() {
             { q: "What hardware do I need?", a: "None. You just need a printer to print QR codes (regular paper works), and a tablet or laptop for the kitchen display." },
             { q: "How do payments work?", a: "Two options: customers can scan your UPI QR code at checkout (with the amount pre-filled), or they can pay at the counter. No payment gateway integration needed." },
             { q: "Can I customize my menu?", a: "Yes — add categories, items with photos, variants (Half/Full), add-ons (Extra cheese), dietary tags, veg/non-veg indicators. All from the admin dashboard." },
-            { q: "Is there a contract or lock-in?", a: "No. The Starter plan is free forever. Pro is month-to-month — cancel anytime." },
+            { q: "Is there a contract or lock-in?", a: "Every restaurant starts with a 3-day free trial. After that you pick an annual plan (Starter, Growth, or Enterprise), billed yearly and paid upfront — no multi-year lock-in." },
             { q: "How long does setup take?", a: "Under 10 minutes. Sign up, add your menu, create tables, print QR codes, done." },
             { q: "Can I use this for multiple restaurants?", a: "Each restaurant gets its own account with a unique menu URL and QR codes. As a platform owner, you can manage all of them from the super admin panel." },
           ].map((f) => (
@@ -402,7 +362,7 @@ export default function HomePage() {
               Ready to skip the wait?
             </h2>
             <p className="opacity-70 mb-8 text-lg relative max-w-md mx-auto">
-              Join restaurants already using TheTableLynk. Set up in 10 minutes, free forever on Starter.
+              Join restaurants already using TheTableLynk. Set up in 10 minutes, free for 3 days — no card required.
             </p>
             <Link href="/register" className="relative">
               <Button size="lg" variant="secondary" className="min-w-52 h-12 text-base group">
