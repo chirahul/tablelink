@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency, formatRelativeTime } from "@/lib/format";
-import { setRestaurantActive } from "../../actions";
+import { setRestaurantActive } from "@/app/(admin)/actions";
 import type { Restaurant } from "@/lib/types";
 
 type RowStats = {
@@ -93,7 +93,12 @@ export function RestaurantsList({ restaurants }: Props) {
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-semibold">{r.name}</span>
+                  <Link
+                    href={`/admin/restaurants/${r.id}`}
+                    className="font-semibold hover:underline"
+                  >
+                    {r.name}
+                  </Link>
                   <Badge
                     variant={r.is_active ? "default" : "outline"}
                     className="text-[10px]"
@@ -118,6 +123,9 @@ export function RestaurantsList({ restaurants }: Props) {
               </div>
 
               <div className="flex gap-2">
+                <Link href={`/admin/restaurants/${r.id}`}>
+                  <Button size="sm">Manage</Button>
+                </Link>
                 <Link href={`/menu/${r.slug}`} target="_blank">
                   <Button variant="outline" size="sm">
                     View menu
