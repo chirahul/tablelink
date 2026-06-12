@@ -29,7 +29,7 @@ import { AnimatedKitchen } from "@/components/landing/animated-kitchen";
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col min-h-screen overflow-x-hidden">
+    <div className="flex flex-col min-h-screen overflow-x-clip">
       {/* Header */}
       <header className="border-b sticky top-0 z-50 bg-background/60 backdrop-blur-xl">
         <div className="container mx-auto flex items-center justify-between h-16 px-4">
