@@ -21,6 +21,7 @@ const links = [
   { href: "/tables", label: "Tables & QR" },
   { href: "/kitchen", label: "Kitchen" },
   { href: "/analytics", label: "Analytics" },
+  { href: "/billing", label: "Billing" },
   { href: "/settings", label: "Settings" },
 ];
 

@@ -15,6 +15,11 @@ export type Restaurant = {
   upi_id: string | null;
   upi_qr_image_url: string | null;
   is_active: boolean;
+  subscription_status: "trialing" | "active" | "expired" | "past_due";
+  plan: "starter" | "growth" | "enterprise" | null;
+  trial_ends_at: string | null;
+  subscription_started_at: string | null;
+  subscription_ends_at: string | null;
   opening_hours: Record<string, { open: string; close: string }>;
   settings: RestaurantSettings;
   gst_number: string | null;

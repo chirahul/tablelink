@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getSubscriptionState } from "@/lib/plans";
 import type { Category, MenuItem, Restaurant, Table } from "./types";
 
 export type MenuData = {
@@ -56,6 +57,9 @@ export async function fetchMenuBySlug(
     .maybeSingle();
 
   if (!restaurant) return null;
+
+  // Subscription gate: an expired restaurant's menu goes offline.
+  if (!getSubscriptionState(restaurant as Restaurant).isLive) return null;
 
   const [{ data: categories }, { data: items }, popularIds] = await Promise.all([
     supabase

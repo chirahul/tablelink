@@ -47,7 +47,7 @@ const sections: { title: string; items: Item[] }[] = [
     title: "Analytics & Billing",
     items: [
       { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
-      { label: "Subscriptions", icon: CreditCard, soon: true },
+      { href: "/admin/subscriptions", label: "Subscriptions", icon: CreditCard },
       { label: "Billing", icon: Receipt, soon: true },
     ],
   },

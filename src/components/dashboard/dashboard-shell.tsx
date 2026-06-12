@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
+import { ChevronLeft, ChevronRight, Clock, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { APP_NAME } from "@/lib/constants";
@@ -16,6 +16,7 @@ type Props = {
   userEmail: string | null;
   initialCollapsed: boolean;
   isSuperAdmin?: boolean;
+  trialDaysLeft?: number | null;
   children: React.ReactNode;
 };
 
@@ -23,6 +24,7 @@ export function DashboardShell({
   userEmail,
   initialCollapsed,
   isSuperAdmin = false,
+  trialDaysLeft = null,
   children,
 }: Props) {
   const [collapsed, setCollapsed] = useState(initialCollapsed);
@@ -109,6 +111,17 @@ export function DashboardShell({
             </Button>
           </form>
         </header>
+        {trialDaysLeft !== null && (
+          <Link
+            href="/billing"
+            className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium bg-primary/10 text-primary hover:bg-primary/15 transition-colors border-b border-primary/20"
+          >
+            <Clock className="w-4 h-4" />
+            {trialDaysLeft > 0
+              ? `Free trial — ${trialDaysLeft} day${trialDaysLeft === 1 ? "" : "s"} left. Choose a plan →`
+              : "Your trial ends today — subscribe to stay online →"}
+          </Link>
+        )}
         <main className="flex-1 p-6">{children}</main>
       </div>
     </div>

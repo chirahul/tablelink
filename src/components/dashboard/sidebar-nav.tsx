@@ -9,6 +9,7 @@ import {
   QrCode,
   ChefHat,
   BarChart3,
+  CreditCard,
   Settings,
   Shield,
 } from "lucide-react";
@@ -21,6 +22,7 @@ const links = [
   { href: "/tables", label: "Tables & QR", icon: QrCode },
   { href: "/kitchen", label: "Kitchen", icon: ChefHat },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/billing", label: "Billing", icon: CreditCard },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
