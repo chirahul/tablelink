@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { isSuperAdminEmail } from "@/lib/is-super-admin";
 
 function slugify(text: string): string {
   return text
@@ -65,6 +66,11 @@ export async function GET(request: Request) {
     const supabase = await createClient();
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      // Super admins land in the control panel (unless an explicit non-dashboard
+      // destination was requested).
+      if (data.user && isSuperAdminEmail(data.user.email) && next.startsWith("/dashboard")) {
+        return NextResponse.redirect(`${origin}/admin`);
+      }
       // Staff path → make sure they own a restaurant.
       if (next.startsWith("/dashboard") && data.user) {
         await ensureRestaurant(data.user);

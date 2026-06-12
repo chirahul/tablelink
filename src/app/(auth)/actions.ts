@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { isSuperAdminEmail } from "@/lib/is-super-admin";
 
 function slugify(text: string): string {
   return text
@@ -114,7 +115,7 @@ export async function login(formData: FormData): Promise<ActionResult> {
 
   const supabase = await createClient();
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
@@ -125,11 +126,14 @@ export async function login(formData: FormData): Promise<ActionResult> {
 
   revalidatePath("/", "layout");
 
-  // Honor the ?redirect= query param if it's a safe same-origin path.
+  // Honor an explicit ?redirect= if it's a safe same-origin path; otherwise
+  // send super admins to the control panel and everyone else to the dashboard.
   const safeRedirect =
     redirectToRaw.startsWith("/") && !redirectToRaw.startsWith("//")
       ? redirectToRaw
-      : "/dashboard";
+      : isSuperAdminEmail(data.user?.email)
+        ? "/admin"
+        : "/dashboard";
   redirect(safeRedirect);
 }
 
