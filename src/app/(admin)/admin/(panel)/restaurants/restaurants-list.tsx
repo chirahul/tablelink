@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency, formatRelativeTime } from "@/lib/format";
+import { getSubscriptionState } from "@/lib/plans";
 import { setRestaurantActive } from "@/app/(admin)/actions";
 import type { Restaurant } from "@/lib/types";
 
@@ -105,6 +106,27 @@ export function RestaurantsList({ restaurants }: Props) {
                   >
                     {r.is_active ? "Active" : "Suspended"}
                   </Badge>
+                  {(() => {
+                    const s = getSubscriptionState(r);
+                    return (
+                      <Badge
+                        variant="outline"
+                        className={`text-[10px] ${
+                          s.status === "active"
+                            ? "border-success text-success"
+                            : s.status === "trialing"
+                              ? "border-primary text-primary"
+                              : "border-destructive text-destructive"
+                        }`}
+                      >
+                        {s.status === "active"
+                          ? "Subscribed"
+                          : s.status === "trialing"
+                            ? `Trial ${s.daysLeft}d`
+                            : "Expired"}
+                      </Badge>
+                    );
+                  })()}
                 </div>
                 <div className="text-xs text-muted-foreground truncate">
                   /menu/{r.slug} •{" "}

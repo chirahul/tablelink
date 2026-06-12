@@ -17,6 +17,7 @@ import {
   Clock,
 } from "lucide-react";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getSubscriptionState } from "@/lib/plans";
 import { StatCard } from "@/components/shared/stat-card";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Badge } from "@/components/ui/badge";
@@ -90,7 +91,19 @@ export default async function AdminRestaurantDetailPage({
     year: "numeric",
   });
 
+  const sub = getSubscriptionState(restaurant);
+  const subEndDate = sub.endsAt
+    ? new Date(sub.endsAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
+    : "—";
+  const subText =
+    sub.status === "active"
+      ? `Subscribed${restaurant.plan ? ` (${restaurant.plan})` : ""} · until ${subEndDate}`
+      : sub.status === "trialing"
+        ? `Trial — ${sub.daysLeft} day${sub.daysLeft === 1 ? "" : "s"} left · ends ${subEndDate}`
+        : "Expired — menu offline & owner paywalled";
+
   const details: { icon: typeof Mail; label: string; value: string | null }[] = [
+    { icon: CreditCard, label: "Subscription", value: subText },
     { icon: Mail, label: "Owner login", value: ownerEmail },
     { icon: Mail, label: "Contact email", value: restaurant.email },
     { icon: Phone, label: "Phone", value: restaurant.phone },
@@ -123,6 +136,22 @@ export default async function AdminRestaurantDetailPage({
             <h1 className="text-2xl font-bold tracking-tight">{restaurant.name}</h1>
             <Badge variant={restaurant.is_active ? "default" : "outline"}>
               {restaurant.is_active ? "Active" : "Suspended"}
+            </Badge>
+            <Badge
+              variant="outline"
+              className={
+                sub.status === "active"
+                  ? "border-success text-success"
+                  : sub.status === "trialing"
+                    ? "border-primary text-primary"
+                    : "border-destructive text-destructive"
+              }
+            >
+              {sub.status === "active"
+                ? "Subscribed"
+                : sub.status === "trialing"
+                  ? `Trial · ${sub.daysLeft}d`
+                  : "Expired"}
             </Badge>
           </div>
           <p className="text-sm text-muted-foreground">
