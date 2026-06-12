@@ -1,19 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowLeft, LogOut } from "lucide-react";
+import { ArrowLeft, Bell, HelpCircle, LogOut, Search } from "lucide-react";
 import { APP_NAME } from "@/lib/constants";
 import { logout } from "../(auth)/actions";
 import { Button } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase/server";
 import { isSuperAdmin } from "@/lib/is-super-admin";
 import { AdminNav } from "./admin-nav";
 import logo from "@/assets/logo-wide.png";
-
-const AdminBadge = () => (
-  <span className="text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded-full">
-    Admin
-  </span>
-);
 
 export default async function AdminLayout({
   children,
@@ -25,57 +20,105 @@ export default async function AdminLayout({
     redirect("/dashboard");
   }
 
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const email = user?.email ?? "admin@thetablelynk.com";
+
   return (
     <div className="flex min-h-screen bg-background">
-      {/* Desktop sidebar */}
+      {/* Sidebar */}
       <aside className="hidden md:flex md:fixed md:inset-y-0 md:left-0 z-30 w-64 flex-col border-r bg-muted/20">
-        <div className="flex h-16 items-center gap-2 border-b px-4 shrink-0">
-          <Link href="/admin" className="flex items-center" aria-label={`${APP_NAME} Admin`}>
-            <Image src={logo} alt={APP_NAME} className="h-9 w-auto" priority />
+        <div className="flex h-[68px] items-center border-b px-4 shrink-0">
+          <Link href="/admin" className="flex flex-col" aria-label={`${APP_NAME} Admin`}>
+            <Image src={logo} alt={APP_NAME} className="h-8 w-auto" priority />
+            <span className="text-[10px] text-muted-foreground tracking-wide pl-0.5 -mt-0.5">
+              Developer Control Panel
+            </span>
           </Link>
-          <span className="ml-auto">
-            <AdminBadge />
-          </span>
         </div>
 
         <AdminNav />
 
-        <div className="border-t p-3 shrink-0 space-y-1">
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to my restaurant
-          </Link>
-          <form action={logout}>
-            <Button
-              type="submit"
-              variant="ghost"
-              size="sm"
-              className="w-full justify-start rounded-xl"
+        {/* User card */}
+        <div className="border-t p-3 shrink-0 space-y-2">
+          <div className="flex items-center gap-2.5 px-1">
+            <span className="w-9 h-9 rounded-full bg-primary/15 text-primary flex items-center justify-center text-xs font-bold shrink-0">
+              SA
+            </span>
+            <div className="min-w-0">
+              <div className="text-sm font-semibold leading-tight">Super Admin</div>
+              <div className="text-[11px] text-muted-foreground truncate">{email}</div>
+            </div>
+          </div>
+          <div className="flex gap-1">
+            <Link
+              href="/dashboard"
+              className="flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-xs text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+              title="Back to my restaurant"
             >
-              <LogOut className="w-4 h-4" />
-              <span className="ml-2">Logout</span>
-            </Button>
-          </form>
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Restaurant
+            </Link>
+            <form action={logout} className="flex-1">
+              <Button
+                type="submit"
+                variant="ghost"
+                size="sm"
+                className="w-full h-auto py-1.5 rounded-lg text-xs"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span className="ml-1.5">Logout</span>
+              </Button>
+            </form>
+          </div>
         </div>
       </aside>
 
       {/* Main */}
       <div className="flex-1 flex flex-col min-w-0 md:ml-64">
-        <header className="flex h-16 items-center justify-between border-b px-4 md:hidden bg-background/80 backdrop-blur-xl">
-          <Link href="/admin" className="flex items-center gap-2" aria-label={`${APP_NAME} Admin`}>
-            <Image src={logo} alt={APP_NAME} className="h-8 w-auto" />
-            <AdminBadge />
+        {/* Top header */}
+        <header className="sticky top-0 z-20 flex h-[68px] items-center gap-3 border-b px-4 md:px-6 bg-background/80 backdrop-blur-xl">
+          <Link href="/admin" className="md:hidden flex items-center" aria-label={`${APP_NAME} Admin`}>
+            <Image src={logo} alt={APP_NAME} className="h-7 w-auto" />
           </Link>
-          <form action={logout}>
-            <Button type="submit" variant="ghost" size="sm">
-              Logout
-            </Button>
-          </form>
+          <div className="hidden sm:flex items-center gap-2 flex-1 max-w-md">
+            <div className="flex items-center gap-2 w-full rounded-xl border bg-muted/40 px-3 h-10 text-sm text-muted-foreground">
+              <Search className="w-4 h-4" />
+              <span className="flex-1">Search restaurants, orders, users…</span>
+              <kbd className="text-[10px] border rounded px-1.5 py-0.5 bg-background">⌘K</kbd>
+            </div>
+          </div>
+          <div className="flex items-center gap-1 ml-auto">
+            <button className="relative p-2 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors" aria-label="Notifications">
+              <Bell className="w-5 h-5" />
+            </button>
+            <button className="hidden sm:flex items-center gap-1.5 p-2 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors text-sm" aria-label="Help">
+              <HelpCircle className="w-5 h-5" />
+            </button>
+            <div className="flex items-center gap-2 pl-2 ml-1 border-l">
+              <span className="w-8 h-8 rounded-full bg-primary/15 text-primary flex items-center justify-center text-xs font-bold">
+                SA
+              </span>
+              <div className="hidden md:block leading-tight">
+                <div className="text-sm font-semibold">Super Admin</div>
+                <div className="text-[11px] text-muted-foreground">Administrator</div>
+              </div>
+            </div>
+          </div>
         </header>
-        <main className="flex-1 p-6 md:p-8">{children}</main>
+
+        <main className="flex-1 p-4 md:p-6">{children}</main>
+
+        <footer className="border-t px-6 py-3 flex items-center justify-between text-xs text-muted-foreground">
+          <span>&copy; {new Date().getFullYear()} {APP_NAME}. All rights reserved.</span>
+          <span className="flex items-center gap-1.5">
+            System Status:
+            <span className="w-1.5 h-1.5 rounded-full bg-success" />
+            <span className="text-success font-medium">All Systems Operational</span>
+          </span>
+        </footer>
       </div>
     </div>
   );
