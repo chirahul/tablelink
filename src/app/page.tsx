@@ -62,7 +62,7 @@ export default function HomePage() {
           <Reveal delay={0}>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border bg-background/80 text-xs text-muted-foreground mb-8 backdrop-blur-sm">
               <Zap className="w-3 h-3 text-yellow-500" />
-              Live ordering in minutes, not months
+              Built for cafés &amp; restaurants
             </div>
           </Reveal>
 
