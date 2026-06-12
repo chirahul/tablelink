@@ -44,22 +44,25 @@ export function PricingPlans({
             </div>
 
             {/* Price — fixed height so the feature lists start on the same line */}
-            <div className="h-16">
+            <div className="h-[5.5rem]">
               {plan.priceYear !== null ? (
                 <>
                   <div className="flex items-baseline gap-1">
                     <span className="text-3xl font-bold tracking-tight">{formatCurrency(monthlyPrice(plan.priceYear))}</span>
-                    <span className="text-sm text-muted-foreground">/ month</span>
+                    <span className="text-sm text-muted-foreground">/ mo equivalent</span>
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    billed annually · {formatCurrency(plan.priceYear)} + 18% GST
-                    <span className="block">= {formatCurrency(yearlyWithGst(plan.priceYear))}/yr incl. GST</span>
+                    {formatCurrency(plan.priceYear)} + 18% GST, billed annually
+                  </div>
+                  <div className="text-sm font-semibold mt-1">
+                    Pay {formatCurrency(yearlyWithGst(plan.priceYear))} upfront / year
                   </div>
                 </>
               ) : (
                 <>
                   <span className="text-2xl font-bold tracking-tight">Custom</span>
                   <div className="text-xs text-muted-foreground">Tailored annual pricing + 18% GST</div>
+                  <div className="text-sm font-semibold mt-1">Paid annually, upfront</div>
                 </>
               )}
             </div>
@@ -84,9 +87,9 @@ export function PaymentInstructions({ config }: { config: BillingConfig }) {
     <div className="rounded-2xl border bg-muted/30 p-5">
       <h3 className="font-semibold mb-1">How to subscribe</h3>
       <p className="text-sm text-muted-foreground mb-4">
-        Pay the yearly amount for your plan (inclusive of 18% GST), then send us your
-        restaurant name and we&apos;ll activate your subscription (usually within a few hours).
-        Plan prices are billed annually and shown exclusive of GST.
+        The full yearly amount (inclusive of 18% GST) is paid <strong>upfront</strong> — a single
+        annual payment, not monthly. Pay it, then send us your restaurant name and we&apos;ll
+        activate your subscription (usually within a few hours).
       </p>
 
       <div className="flex flex-col sm:flex-row gap-5 items-center sm:items-start">
