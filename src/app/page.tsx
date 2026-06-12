@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PricingPlans } from "@/components/billing/pricing-plans";
+import { PoweredBy } from "@/components/powered-by";
 import { Separator } from "@/components/ui/separator";
 import { APP_NAME } from "@/lib/constants";
 import {
@@ -414,9 +415,10 @@ export default function HomePage() {
           <Separator />
           <div className="pt-8 flex items-center justify-between text-xs text-muted-foreground flex-wrap gap-4">
             <div>&copy; {new Date().getFullYear()} {APP_NAME}. All rights reserved.</div>
-            <div className="flex gap-6">
+            <div className="flex items-center gap-6">
               <span className="hover:text-foreground transition-colors cursor-pointer">Privacy Policy</span>
               <span className="hover:text-foreground transition-colors cursor-pointer">Terms of Service</span>
+              <PoweredBy />
             </div>
           </div>
         </div>

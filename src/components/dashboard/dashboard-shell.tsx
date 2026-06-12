@@ -11,6 +11,7 @@ import { logout } from "@/app/(auth)/actions";
 import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { SidebarNav } from "@/components/dashboard/sidebar-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { PoweredBy } from "@/components/powered-by";
 import logo from "@/assets/logo-wide.png";
 
 type Props = {
@@ -89,6 +90,11 @@ export function DashboardShell({
               {!collapsed && <span className="ml-2">Logout</span>}
             </Button>
           </form>
+          {!collapsed && (
+            <div className="pt-2 flex justify-center">
+              <PoweredBy />
+            </div>
+          )}
         </div>
       </aside>
 

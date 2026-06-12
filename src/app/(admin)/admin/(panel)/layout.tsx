@@ -10,6 +10,7 @@ import { isSuperAdmin } from "@/lib/is-super-admin";
 import { AdminNav } from "../../admin-nav";
 import { AdminSearch } from "@/components/admin/admin-search";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { PoweredBy } from "@/components/powered-by";
 import logo from "@/assets/logo-wide.png";
 
 export default async function AdminPanelLayout({
@@ -112,13 +113,16 @@ export default async function AdminPanelLayout({
 
         <main className="flex-1 p-4 md:p-6">{children}</main>
 
-        <footer className="border-t px-6 py-3 flex items-center justify-between text-xs text-muted-foreground">
+        <footer className="border-t px-6 py-3 flex items-center justify-between text-xs text-muted-foreground gap-4 flex-wrap">
           <span>&copy; {new Date().getFullYear()} {APP_NAME}. All rights reserved.</span>
-          <span className="flex items-center gap-1.5">
-            System Status:
-            <span className="w-1.5 h-1.5 rounded-full bg-success" />
-            <span className="text-success font-medium">All Systems Operational</span>
-          </span>
+          <div className="flex items-center gap-5">
+            <PoweredBy />
+            <span className="flex items-center gap-1.5">
+              System Status:
+              <span className="w-1.5 h-1.5 rounded-full bg-success" />
+              <span className="text-success font-medium">All Systems Operational</span>
+            </span>
+          </div>
         </footer>
       </div>
     </div>
