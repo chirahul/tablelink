@@ -77,13 +77,6 @@ export function DashboardShell({
               {userEmail}
             </p>
           )}
-          <ThemeToggle
-            showLabel={!collapsed}
-            className={cn(
-              "mb-1 py-2 rounded-xl",
-              collapsed ? "w-full justify-center px-0" : "w-full justify-start px-3"
-            )}
-          />
           <form action={logout}>
             <Button
               type="submit"
@@ -106,6 +99,12 @@ export function DashboardShell({
           collapsed ? "md:ml-16" : "md:ml-64"
         )}
       >
+        {/* Desktop top bar */}
+        <header className="hidden md:flex h-14 items-center justify-end gap-1 border-b px-6 sticky top-0 z-10 bg-background/80 backdrop-blur-xl">
+          <ThemeToggle className="p-2" />
+        </header>
+
+        {/* Mobile header */}
         <header className="flex h-16 items-center justify-between border-b px-4 md:hidden bg-background/80 backdrop-blur-xl">
           <div className="flex items-center gap-2">
             <MobileNav userEmail={userEmail} isSuperAdmin={isSuperAdmin} />
@@ -113,11 +112,14 @@ export function DashboardShell({
               <Image src={logo} alt={APP_NAME} className="h-9 w-auto rounded-md" />
             </Link>
           </div>
-          <form action={logout}>
-            <Button type="submit" variant="ghost" size="sm">
-              Logout
-            </Button>
-          </form>
+          <div className="flex items-center gap-1">
+            <ThemeToggle className="p-2" />
+            <form action={logout}>
+              <Button type="submit" variant="ghost" size="sm">
+                Logout
+              </Button>
+            </form>
+          </div>
         </header>
         {trialDaysLeft !== null && (
           <Link

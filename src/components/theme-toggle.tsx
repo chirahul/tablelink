@@ -2,10 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
-import { Moon, Sun } from "lucide-react";
+import { Monitor, Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-/** Light/Dark toggle. Works anywhere under the root ThemeProvider. */
+type Mode = "system" | "light" | "dark";
+const ORDER: Mode[] = ["system", "light", "dark"];
+const LABEL: Record<Mode, string> = { system: "System", light: "Light", dark: "Dark" };
+const ICON = { system: Monitor, light: Sun, dark: Moon };
+
+/** Cycles theme: System (auto) → Light → Dark. Works under the root ThemeProvider. */
 export function ThemeToggle({
   className,
   showLabel = false,
@@ -13,32 +18,27 @@ export function ThemeToggle({
   className?: string;
   showLabel?: boolean;
 }) {
-  const { resolvedTheme, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const isDark = mounted && resolvedTheme === "dark";
+  const current: Mode = mounted ? ((theme as Mode) ?? "system") : "system";
+  const next = ORDER[(ORDER.indexOf(current) + 1) % ORDER.length];
+  const Icon = ICON[current];
 
   return (
     <button
       type="button"
-      onClick={() => setTheme(isDark ? "light" : "dark")}
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      title={isDark ? "Light mode" : "Dark mode"}
+      onClick={() => setTheme(next)}
+      aria-label={`Theme: ${LABEL[current]} — switch to ${LABEL[next]}`}
+      title={`Theme: ${LABEL[current]} (click for ${LABEL[next]})`}
       className={cn(
         "inline-flex items-center gap-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors",
         className
       )}
     >
-      {/* Keep an icon slot before mount to avoid layout shift / hydration mismatch */}
-      {!mounted ? (
-        <Sun className="w-4 h-4 opacity-0" />
-      ) : isDark ? (
-        <Sun className="w-4 h-4 shrink-0" />
-      ) : (
-        <Moon className="w-4 h-4 shrink-0" />
-      )}
-      {showLabel && <span className="text-sm">{isDark ? "Light mode" : "Dark mode"}</span>}
+      <Icon className={cn("w-4 h-4 shrink-0", !mounted && "opacity-0")} />
+      {showLabel && <span className="text-sm">{LABEL[current]}</span>}
     </button>
   );
 }
