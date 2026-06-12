@@ -1,6 +1,6 @@
 import { Check, Star } from "lucide-react";
 import { formatCurrency } from "@/lib/format";
-import { PLAN_LIST, type PlanId } from "@/lib/plans";
+import { PLAN_LIST, monthlyPrice, yearlyWithGst, type PlanId } from "@/lib/plans";
 import type { BillingConfig } from "@/lib/billing-config";
 import { cn } from "@/lib/utils";
 
@@ -44,14 +44,23 @@ export function PricingPlans({
             </div>
 
             {/* Price — fixed height so the feature lists start on the same line */}
-            <div className="h-12 flex items-baseline gap-1">
+            <div className="h-16">
               {plan.priceYear !== null ? (
                 <>
-                  <span className="text-3xl font-bold tracking-tight">{formatCurrency(plan.priceYear)}</span>
-                  <span className="text-sm text-muted-foreground">/ year</span>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-3xl font-bold tracking-tight">{formatCurrency(monthlyPrice(plan.priceYear))}</span>
+                    <span className="text-sm text-muted-foreground">/ month</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    billed annually · {formatCurrency(plan.priceYear)} + 18% GST
+                    <span className="block">= {formatCurrency(yearlyWithGst(plan.priceYear))}/yr incl. GST</span>
+                  </div>
                 </>
               ) : (
-                <span className="text-2xl font-bold tracking-tight">Custom</span>
+                <>
+                  <span className="text-2xl font-bold tracking-tight">Custom</span>
+                  <div className="text-xs text-muted-foreground">Tailored annual pricing + 18% GST</div>
+                </>
               )}
             </div>
 
@@ -75,8 +84,9 @@ export function PaymentInstructions({ config }: { config: BillingConfig }) {
     <div className="rounded-2xl border bg-muted/30 p-5">
       <h3 className="font-semibold mb-1">How to subscribe</h3>
       <p className="text-sm text-muted-foreground mb-4">
-        Pay the yearly amount for your plan, then send us your restaurant name and we&apos;ll
-        activate your subscription (usually within a few hours).
+        Pay the yearly amount for your plan (inclusive of 18% GST), then send us your
+        restaurant name and we&apos;ll activate your subscription (usually within a few hours).
+        Plan prices are billed annually and shown exclusive of GST.
       </p>
 
       <div className="flex flex-col sm:flex-row gap-5 items-center sm:items-start">

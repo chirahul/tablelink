@@ -14,6 +14,17 @@ export interface Plan {
 
 export const TRIAL_DAYS = 3;
 export const SUBSCRIPTION_DAYS = 365;
+export const GST_RATE = 0.18; // 18% GST, applied on top of listed (ex-GST) prices
+
+/** Monthly equivalent of a yearly (ex-GST) price, rounded to the rupee. */
+export function monthlyPrice(yearly: number): number {
+  return Math.round(yearly / 12);
+}
+
+/** Yearly price including 18% GST, rounded to the rupee. */
+export function yearlyWithGst(yearly: number): number {
+  return Math.round(yearly * (1 + GST_RATE));
+}
 
 /** Where owners pay for a plan (manual activation). */
 export const BILLING_CONTACT = {
